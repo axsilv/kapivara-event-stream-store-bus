@@ -9,17 +9,17 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 
-class AddEventServiceTest :
+class AddAllEventsServiceTest :
     BehaviorSpec({
 
-        context("Add a new event") {
-            given("A new event") {
-                `when`("CallS event add function") {
+        context("Add multiple events") {
+            given("List of events") {
+                `when`("Calls add all") {
                     then("Just run") {
                         val eventStoreRepository = mockk<EventStoreRepository>()
                         val eventBusClient = mockk<EventBusClient>()
                         val service =
-                            AddEventService(
+                            AddAllEventsService(
                                 eventStoreRepository = eventStoreRepository,
                                 eventBusClient = eventBusClient,
                             )
@@ -32,7 +32,7 @@ class AddEventServiceTest :
                             )
                         }
 
-                        service.add(event = event)
+                        service.addAll(events = listOf(event))
 
                         coVerify {
                             event.add(

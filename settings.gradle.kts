@@ -16,5 +16,7 @@ include(
     "deployments:spring:event-bus-webhooks",
     "core:eventhub-domains",
     "core:eventhub-ports",
-    "core:eventhub-services"
+    "core:eventhub-services",
+    "adapters:web:spring:router",
+    "adapters:databases:r2dbc"
 )
