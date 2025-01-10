@@ -1,0 +1,41 @@
+[versions]
+spring-boot = "3.3.3"
+spring-dependency-management = "1.1.5"
+plugin-spring = "1.9.24"
+kotlin = "2.0.20"
+kotlinx-coroutines = "1.9.0-RC.2"
+kotlinx-datetime = "0.6.1"
+kotlinx-collections-immutable = "0.3.7"
+kotest = "5.9.1"
+mockk = "1.13.12"
+kotlinter = "4.4.1"
+serialization = "1.8.0-RC"
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot"}
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management"}
+plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "plugin-spring"}
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter"}
+
+[libraries]
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot"}
+spring-boot = { module = "org.springframework.boot:spring-boot", version.ref = "spring-boot"}
+spring-boot-autoconfigure = { module = "org.springframework.boot:spring-boot-autoconfigure", version.ref = "spring-boot"}
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot"}
+spring-boot-starter-log4j2 = { module = "org.springframework.boot:spring-boot-starter-log4j2", version.ref = "spring-boot"}
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot"}
+
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines"}
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime-jvm", version.ref = "kotlinx-datetime"}
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable"}
+
+serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
+
+kotest-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest"}
+kotest-assertions = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest"}
+kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest"}
+
+mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk"}
