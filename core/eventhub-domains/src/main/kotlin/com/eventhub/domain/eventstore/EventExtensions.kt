@@ -1,6 +1,7 @@
 package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.eventstore.Event.EventId
+import com.eventhub.domain.eventstore.Event.OwnerId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.ports.eventstore.EventStore
 import java.util.UUID
@@ -24,8 +25,9 @@ fun EventStore.toEvent() =
                     },
                 data = data,
             ),
-        eventStreamId = EventStreamId(id = eventStreamId),
+        eventStreamId = EventStreamId(value = eventStreamId),
         shouldSendToEventBus = shouldSendToEventBus,
+        ownerId = OwnerId(ownerId),
     )
 
 fun Event.toEventStore() =
@@ -40,6 +42,7 @@ fun Event.toEventStore() =
         data = eventData.data,
         eventStreamId = eventStreamId.toUUID(),
         shouldSendToEventBus = shouldSendToEventBus,
+        ownerId = ownerId.toUUID(),
     )
 
 fun UUID.toEventId(): EventId = EventId(value = this)

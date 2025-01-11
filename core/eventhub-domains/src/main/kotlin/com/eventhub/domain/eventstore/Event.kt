@@ -1,6 +1,6 @@
 package com.eventhub.domain.eventstore
 
-import com.eventhub.domain.eventstore.Event.EventId
+import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.ports.eventbus.EventBusClient
 import com.eventhub.ports.eventstore.EventStoreRepository
@@ -13,20 +13,21 @@ data class Event(
     val occurredOn: Instant,
     val eventData: EventData,
     val eventStreamId: EventStreamId,
-    val shouldSendToEventBus: Boolean
+    val shouldSendToEventBus: Boolean,
+    val ownerId: OwnerId,
 ) {
     data class EventId(
         private val value: UUID,
-    ) {
-        fun toUUID() = value
-
-        override fun toString() = value.toString()
-
+    ) : Identifier(value = value) {
         suspend fun get(eventStoreRepository: EventStoreRepository) =
             eventStoreRepository
                 .get(eventId = this.toUUID())
                 .toEvent()
     }
+
+    data class OwnerId(
+        private val value: UUID,
+    ) : Identifier(value = value)
 
     suspend fun add(
         eventStoreRepository: EventStoreRepository,

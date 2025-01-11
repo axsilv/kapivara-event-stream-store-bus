@@ -1,5 +1,6 @@
 package com.eventhub.domain.eventstore
 
+import com.eventhub.domain.eventstore.Event.OwnerId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.ports.eventstore.EventStore
 import kotlinx.datetime.Clock
@@ -10,6 +11,7 @@ import java.util.UUID
 object EventTestFixture {
     val eventUuid: UUID = UUID.randomUUID()
     val eventStreamUuid: UUID = UUID.randomUUID()
+    private val ownerId: UUID = UUID.randomUUID()
     private val occurredOn = Clock.System.now()
 
     fun event(shouldSendToEventBus: Boolean): Event =
@@ -27,6 +29,7 @@ object EventTestFixture {
                 ),
             eventStreamId = EventStreamId(eventStreamUuid),
             shouldSendToEventBus = shouldSendToEventBus,
+            ownerId = OwnerId(ownerId),
         )
 
     fun eventStore() =
@@ -41,5 +44,6 @@ object EventTestFixture {
             data = Json.encodeToJsonElement(mapOf("test" to "true")),
             eventStreamId = eventStreamUuid,
             shouldSendToEventBus = true,
+            ownerId = ownerId,
         )
 }

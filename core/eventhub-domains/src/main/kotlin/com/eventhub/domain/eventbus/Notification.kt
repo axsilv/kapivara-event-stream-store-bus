@@ -1,5 +1,6 @@
 package com.eventhub.domain.eventbus
 
+import com.eventhub.domain.Identifier
 import kotlinx.datetime.Instant
 import java.util.UUID
 
@@ -11,6 +12,6 @@ data class Notification(
     val occurredOn: Instant,
 ) {
     data class NotificationId(
-        val id: UUID,
-    )
+        val value: UUID,
+    ) : Identifier(value = value)
 }

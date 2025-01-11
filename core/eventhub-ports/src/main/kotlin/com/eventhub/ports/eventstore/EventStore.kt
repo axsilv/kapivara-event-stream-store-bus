@@ -14,5 +14,6 @@ data class EventStore(
     val relatedIdentifiers: Map<UUID, String>,
     val data: JsonElement,
     val eventStreamId: UUID,
-    val shouldSendToEventBus: Boolean
+    val shouldSendToEventBus: Boolean,
+    val ownerId: UUID,
 )

@@ -7,8 +7,9 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.buildAndAwait
 
-class AddEventHandler(private val addEventService: AddEventService) {
-
+class AddEventHandler(
+    private val addEventService: AddEventService,
+) {
     suspend fun add(serverRequest: ServerRequest): ServerResponse {
         val event = serverRequest.awaitBody<Event>()
         addEventService.add(event)

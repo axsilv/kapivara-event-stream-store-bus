@@ -1,3 +1,3 @@
 package com.eventhub.services.eventstore
 
-data class GetEvent()
+data class GetEvent
