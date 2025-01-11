@@ -1,6 +1,5 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
 import com.eventhub.ports.eventbus.EventBusClient
 import com.eventhub.ports.eventstore.EventStoreRepository
 import kotlinx.coroutines.coroutineScope
@@ -11,12 +10,12 @@ class AddAllEventsService(
     private val eventStoreRepository: EventStoreRepository,
     private val eventBusClient: EventBusClient,
 ) {
-    suspend fun addAll(events: List<Event>) =
+    suspend fun addAll(addEvents: List<AddEvent>) =
         coroutineScope {
-            events
-                .map { event ->
+            addEvents
+                .map { addEvent ->
                     launch {
-                        event.add(
+                        addEvent.toEvent().add(
                             eventStoreRepository = eventStoreRepository,
                             eventBusClient = eventBusClient,
                         )

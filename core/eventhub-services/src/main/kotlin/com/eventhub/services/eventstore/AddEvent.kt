@@ -15,4 +15,5 @@ data class AddEvent(
     val data: JsonElement,
     val eventStreamId: UUID,
     val shouldSendToEventBus: Boolean,
+    val ownerId: UUID,
 )

@@ -1,6 +1,6 @@
 package com.adapters.web.spring.router
 
-import com.eventhub.domain.eventstore.Event
+import com.eventhub.services.eventstore.AddEvent
 import com.eventhub.services.eventstore.AddEventService
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -11,7 +11,7 @@ class AddEventHandler(
     private val addEventService: AddEventService,
 ) {
     suspend fun add(serverRequest: ServerRequest): ServerResponse {
-        val event = serverRequest.awaitBody<Event>()
+        val event = serverRequest.awaitBody<AddEvent>()
         addEventService.add(event)
         return ServerResponse.accepted().buildAndAwait()
     }

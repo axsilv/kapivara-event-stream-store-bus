@@ -32,7 +32,7 @@ class AddEventServiceTest :
                             )
                         }
 
-                        service.add(event = event)
+                        service.add(addEvent = event)
 
                         coVerify {
                             event.add(

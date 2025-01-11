@@ -32,7 +32,7 @@ class AddAllEventsServiceTest :
                             )
                         }
 
-                        service.addAll(events = listOf(event))
+                        service.addAll(addEvents = listOf(event))
 
                         coVerify {
                             event.add(

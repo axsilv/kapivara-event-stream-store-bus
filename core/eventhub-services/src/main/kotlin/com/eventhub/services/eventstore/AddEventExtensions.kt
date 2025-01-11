@@ -1,12 +1,13 @@
-package com.eventhub.domain.eventstore
+package com.eventhub.services.eventstore
 
+import com.eventhub.domain.eventstore.Event
 import com.eventhub.domain.eventstore.Event.EventId
 import com.eventhub.domain.eventstore.Event.OwnerId
+import com.eventhub.domain.eventstore.EventData
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.ports.eventstore.EventStore
-import java.util.UUID
+import com.eventhub.domain.eventstore.toRelatedIdentifierId
 
-fun EventStore.toEvent() =
+fun AddEvent.toEvent(): Event =
     Event(
         eventId = EventId(eventId),
         metadata = metadata,
@@ -29,22 +30,3 @@ fun EventStore.toEvent() =
         shouldSendToEventBus = shouldSendToEventBus,
         ownerId = OwnerId(ownerId),
     )
-
-fun Event.toEventStore() =
-    EventStore(
-        eventId = eventId.toUUID(),
-        metadata = metadata,
-        occurredOn = occurredOn,
-        owner = eventData.owner,
-        type = eventData.type,
-        alias = eventData.alias,
-        relatedIdentifiers = eventData.relatedIdentifiers.associate { it.relatedIdentifierId.value to it.owner },
-        data = eventData.data,
-        eventStreamId = eventStreamId.toUUID(),
-        shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = ownerId.toUUID(),
-    )
-
-fun UUID.toEventId(): EventId = EventId(value = this)
-
-fun UUID.toEventStreamId(): EventStreamId = EventStreamId(value = this)
