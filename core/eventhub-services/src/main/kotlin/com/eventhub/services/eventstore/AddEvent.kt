@@ -1,10 +1,10 @@
-package com.eventhub.ports.eventstore
+package com.eventhub.services.eventstore
 
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.JsonElement
-import java.util.UUID
 
-data class EventStore(
+data class AddEvent(
     val eventId: UUID,
     val metadata: Map<String, String>,
     val occurredOn: Instant,

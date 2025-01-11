@@ -13,7 +13,7 @@ data class Event(
     val occurredOn: Instant,
     val eventData: EventData,
     val eventStreamId: EventStreamId,
-    val shouldSendToEventBus: Boolean,
+    val shouldSendToEventBus: Boolean
 ) {
     data class EventId(
         private val value: UUID,
