@@ -4,12 +4,15 @@ spring-dependency-management = "1.1.7"
 plugin-spring = "2.1.20-Beta1"
 kotlin = "2.1.20-Beta1"
 kotlinx-coroutines = "1.10.1"
+coroutines-reactor = "1.10.1"
 kotlinx-datetime = "0.6.1"
 kotlinx-collections-immutable = "0.3.8"
 kotest = "5.9.1"
 mockk = "1.13.14"
 kotlinter = "5.0.1"
 serialization = "1.8.0-RC"
+r2dbc-postgresql = "1.0.7.RELEASE"
+r2dbc-pool = "1.0.2.RELEASE"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -28,8 +31,10 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines"}
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
+kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines-reactor"}
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime-jvm", version.ref = "kotlinx-datetime"}
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable"}
+
 
 serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
@@ -39,3 +44,6 @@ kotest-assertions = { module = "io.kotest:kotest-assertions-core-jvm", version.r
 kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest"}
 
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk"}
+
+r2dbc-postgresql = { module = "org.postgresql:r2dbc-postgresql", version.ref = "r2dbc-postgresql"}
+r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool"}

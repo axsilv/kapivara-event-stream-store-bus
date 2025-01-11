@@ -18,5 +18,5 @@ include(
     "core:eventhub-ports",
     "core:eventhub-services",
     "adapters:web:spring:router",
-    "adapters:databases:r2dbc"
+    "adapters:databases:r2dbc-postgresql"
 )
