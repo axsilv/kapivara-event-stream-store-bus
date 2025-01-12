@@ -1,10 +1,20 @@
 package com.eventhub.services.eventstore
 
+import com.eventhub.domain.eventstore.Event
+import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.toEventId
+import com.eventhub.domain.eventstore.toEventStreamId
 import com.eventhub.ports.eventstore.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
+import java.util.UUID
 
 class GetEventStreamTest :
     BehaviorSpec({
@@ -17,20 +27,24 @@ class GetEventStreamTest :
                             GetEventStreamService(
                                 eventStoreRepository = eventStoreRepository,
                             )
+                        mockkStatic(UUID::toEventId)
+                        val eventStreamUuid = mockk<UUID>()
                         val eventStreamId = mockk<EventStreamId>()
 
-//                        coEvery {
-//                            eventStreamId.get(eventStoreRepository = any())
-//                        } returns
-//                            EventStream(
-//                                eventStreamId = eventStreamId,
-//                                events = listOf(mockk<Event>()),
-//                            )
-//
-//                        service.get(eventStreamId = eventStreamId)
-//
-//                        coVerify { eventStreamId.get(eventStoreRepository = eventStoreRepository) }
-                        confirmVerified(eventStreamId)
+                        every { eventStreamUuid.toEventStreamId() } returns eventStreamId
+                        coEvery {
+                            eventStreamId.get(eventStoreRepository = any())
+                        } returns
+                            EventStream(
+                                eventStreamId = eventStreamId,
+                                events = listOf(mockk<Event>()),
+                            )
+
+                        service.get(eventStreamId = eventStreamUuid)
+
+                        verify { eventStreamUuid.toEventStreamId() }
+                        coVerify { eventStreamId.get(eventStoreRepository = eventStoreRepository) }
+                        confirmVerified(eventStreamId, eventStreamUuid)
                     }
                 }
             }

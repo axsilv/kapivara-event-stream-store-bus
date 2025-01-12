@@ -4,8 +4,12 @@ import com.eventhub.domain.eventstore.Event
 import com.eventhub.ports.eventbus.EventBusClient
 import com.eventhub.ports.eventstore.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 
 class AddEventServiceTest :
     BehaviorSpec({
@@ -21,24 +25,30 @@ class AddEventServiceTest :
                                 eventStoreRepository = eventStoreRepository,
                                 eventBusClient = eventBusClient,
                             )
-                        val event = mockk<Event>(relaxed = true)
+                        val event = mockk<Event>()
+                        val addEvent = mockk<AddEvent>()
 
-//                        coJustRun {
-//                            event.add(
-//                                eventStoreRepository = eventStoreRepository,
-//                                eventBusClient = eventBusClient,
-//                            )
-//                        }
+                        every {
+                            addEvent.toEvent()
+                        } returns event
 
-//                        service.add(addEvent = event)
+                        coJustRun {
+                            event.add(
+                                eventStoreRepository = eventStoreRepository,
+                                eventBusClient = eventBusClient,
+                            )
+                        }
 
-//                        coVerify {
-//                            event.add(
-//                                eventStoreRepository = eventStoreRepository,
-//                                eventBusClient = eventBusClient,
-//                            )
-//                        }
-                        confirmVerified(event)
+                        service.add(addEvent = addEvent)
+
+                        verify { addEvent.toEvent() }
+                        coVerify {
+                            event.add(
+                                eventStoreRepository = eventStoreRepository,
+                                eventBusClient = eventBusClient,
+                            )
+                        }
+                        confirmVerified(event, addEvent)
                     }
                 }
             }
