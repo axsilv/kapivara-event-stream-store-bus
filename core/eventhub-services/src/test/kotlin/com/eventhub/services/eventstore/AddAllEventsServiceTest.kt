@@ -1,7 +1,9 @@
 package com.eventhub.services.eventstore
 
 import com.eventhub.domain.eventstore.Event
+import com.eventhub.domain.eventstore.toEvent
 import com.eventhub.ports.eventbus.EventBusClient
+import com.eventhub.ports.eventstore.AddEvent
 import com.eventhub.ports.eventstore.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coJustRun
@@ -9,6 +11,7 @@ import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 
 class AddAllEventsServiceTest :
@@ -27,6 +30,7 @@ class AddAllEventsServiceTest :
                             )
                         val event = mockk<Event>()
                         val addEvent = mockk<AddEvent>()
+                        mockkStatic(AddEvent::toEvent)
 
                         every { addEvent.toEvent() } returns event
                         coJustRun {

@@ -5,20 +5,28 @@ import io.r2dbc.pool.ConnectionPoolConfiguration
 import io.r2dbc.spi.Connection
 import io.r2dbc.spi.ConnectionFactories
 import io.r2dbc.spi.ConnectionFactoryOptions
+import io.r2dbc.spi.ConnectionFactoryOptions.DATABASE
+import io.r2dbc.spi.ConnectionFactoryOptions.DRIVER
+import io.r2dbc.spi.ConnectionFactoryOptions.HOST
+import io.r2dbc.spi.ConnectionFactoryOptions.PASSWORD
+import io.r2dbc.spi.ConnectionFactoryOptions.PORT
+import io.r2dbc.spi.ConnectionFactoryOptions.USER
 import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.context.annotation.Bean
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
-suspend fun connection(): Connection {
+@Bean
+suspend fun r2dbcPostgresqlConnection(): Connection {
     val options =
         ConnectionFactoryOptions
             .builder()
-            .option(ConnectionFactoryOptions.DRIVER, "postgresql")
-            .option(ConnectionFactoryOptions.HOST, "<host>")
-            .option(ConnectionFactoryOptions.PORT, 5432)
-            .option(ConnectionFactoryOptions.USER, "<your-username>")
-            .option(ConnectionFactoryOptions.PASSWORD, "<your-password>")
-            .option(ConnectionFactoryOptions.DATABASE, "<database>")
+            .option(DRIVER, "postgresql")
+            .option(HOST, "<host>")
+            .option(PORT, 5432)
+            .option(USER, "<your-username>")
+            .option(PASSWORD, "<your-password>")
+            .option(DATABASE, "<database>")
             .build()
 
     val factory = ConnectionFactories.get(options)

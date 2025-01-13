@@ -1,17 +1,17 @@
-package com.adapters.web.spring.router
+package com.eventstore.queries.router
 
-import com.eventhub.services.eventstore.GetEventStreamService
+import com.eventhub.ports.eventstore.EventStreamQueryService
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
 import java.util.UUID
 
 class GetEventStreamHandler(
-    private val getEventStreamService: GetEventStreamService,
+    private val eventStreamQueryService: EventStreamQueryService,
 ) {
     suspend fun get(serverRequest: ServerRequest): ServerResponse {
         val eventStreamId = UUID.fromString(serverRequest.pathVariable(""))
-        val eventStream = getEventStreamService.get(eventStreamId = eventStreamId)
+        val eventStream = eventStreamQueryService.get(eventStreamId = eventStreamId)
         return ServerResponse.ok().bodyValueAndAwait(eventStream)
     }
 }

@@ -2,11 +2,13 @@ package com.kapivara.eventhub.adapters.databases.r2dbc.postgresql
 
 import com.eventhub.ports.eventstore.EventStore
 import com.eventhub.ports.eventstore.EventStoreRepository
+import org.springframework.stereotype.Repository
 import java.sql.Connection
 import java.util.UUID
 
+@Repository
 class R2dbcEventStoreRepository(
-    private val connection: Connection,
+    private val r2dbcPostgresqlConnection: Connection,
 ) : EventStoreRepository {
     override suspend fun add(eventStore: EventStore) {
         TODO("Not yet implemented")
