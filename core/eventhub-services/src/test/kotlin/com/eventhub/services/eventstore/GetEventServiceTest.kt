@@ -1,9 +1,9 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
 import com.eventhub.domain.eventstore.Event.EventId
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.ports.eventstore.EventStoreRepository
+import com.eventhub.services.eventstore.EventTestFixture.event
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,7 +25,6 @@ class GetEventServiceTest :
                             GetEventService(
                                 eventStoreRepository = eventStoreRepository,
                             )
-                        val event = mockk<Event>()
                         val eventUuid = mockk<UUID>()
                         val eventId = mockk<EventId>()
                         mockkStatic(UUID::toEventId)
@@ -33,7 +32,7 @@ class GetEventServiceTest :
                         every { eventUuid.toEventId() } returns eventId
                         coEvery {
                             eventId.get(any())
-                        } returns event
+                        } returns event()
 
                         service.get(eventId = eventUuid)
 

@@ -1,11 +1,10 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
 import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toEventStreamId
 import com.eventhub.ports.eventstore.EventStoreRepository
+import com.eventhub.services.eventstore.EventTestFixture.event
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -27,7 +26,8 @@ class GetEventStreamTest :
                             GetEventStreamService(
                                 eventStoreRepository = eventStoreRepository,
                             )
-                        mockkStatic(UUID::toEventId)
+                        mockkStatic(UUID::toEventStreamId)
+                        mockkStatic(EventStreamId::toUUID)
                         val eventStreamUuid = mockk<UUID>()
                         val eventStreamId = mockk<EventStreamId>()
 
@@ -37,13 +37,15 @@ class GetEventStreamTest :
                         } returns
                             EventStream(
                                 eventStreamId = eventStreamId,
-                                events = listOf(mockk<Event>()),
+                                events = listOf(event()),
                             )
+                        every { eventStreamId.toUUID() } returns eventStreamUuid
 
                         service.get(eventStreamId = eventStreamUuid)
 
                         verify { eventStreamUuid.toEventStreamId() }
                         coVerify { eventStreamId.get(eventStoreRepository = eventStoreRepository) }
+                        verify { eventStreamId.toUUID() }
                         confirmVerified(eventStreamId, eventStreamUuid)
                     }
                 }
