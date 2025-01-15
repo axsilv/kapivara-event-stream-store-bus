@@ -13,6 +13,7 @@ kotlinter = "5.0.1"
 serialization = "1.8.0-RC"
 r2dbc-postgresql = "1.0.7.RELEASE"
 r2dbc-pool = "1.0.2.RELEASE"
+flyway = "11.1.1"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -20,6 +21,7 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot"}
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management"}
 plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "plugin-spring"}
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter"}
+flyway = { id = "org.flywaydb.flyway", version.ref = "flyway"}
 
 [libraries]
 spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot"}
@@ -47,3 +49,5 @@ mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk"}
 
 r2dbc-postgresql = { module = "org.postgresql:r2dbc-postgresql", version.ref = "r2dbc-postgresql"}
 r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool"}
+
+flyway = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }

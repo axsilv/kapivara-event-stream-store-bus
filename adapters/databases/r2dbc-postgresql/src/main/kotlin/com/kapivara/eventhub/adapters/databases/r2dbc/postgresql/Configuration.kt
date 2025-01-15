@@ -17,16 +17,16 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 @Bean
-suspend fun r2dbcPostgresqlConnection(): Connection {
+suspend fun r2dbcPostgresqlConnection(r2dbcEventStoreProperties: R2dbcEventStoreProperties): Connection {
     val options =
         ConnectionFactoryOptions
             .builder()
             .option(DRIVER, "postgresql")
-            .option(HOST, "<host>")
-            .option(PORT, 5432)
-            .option(USER, "<your-username>")
-            .option(PASSWORD, "<your-password>")
-            .option(DATABASE, "<database>")
+            .option(HOST, r2dbcEventStoreProperties.host)
+            .option(PORT, r2dbcEventStoreProperties.port)
+            .option(USER, r2dbcEventStoreProperties.user)
+            .option(PASSWORD, r2dbcEventStoreProperties.password)
+            .option(DATABASE, r2dbcEventStoreProperties.database)
             .build()
 
     val factory = ConnectionFactories.get(options)
