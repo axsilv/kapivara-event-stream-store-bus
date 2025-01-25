@@ -2,8 +2,8 @@ package com.eventhub.services.eventstore
 
 import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.toEventStreamId
-import com.eventhub.ports.eventstore.EventStoreRepository
 import com.eventhub.services.eventstore.EventTestFixture.event
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coEvery

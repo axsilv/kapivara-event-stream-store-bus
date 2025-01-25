@@ -1,7 +1,7 @@
 package com.kapivara.eventhub.adapters.databases.r2dbc.postgresql
 
 object Queries {
-    val INSERT_EVENT_STORE =
+    const val INSERT_EVENT_STORE =
         """
         INSERT INTO EventStore (
             eventId, 
@@ -14,7 +14,8 @@ object Queries {
              data, 
              eventStreamId, 
              shouldSendToEventBus, 
-             ownerId
+             ownerId,
+             identityId
         ) VALUES (
             :eventId, 
             :metadata, 
@@ -26,9 +27,10 @@ object Queries {
             :data,
             :eventStreamId, 
             :shouldSendToEventBus, 
-            :ownerId
+            :ownerId,
+            :identityId
         )
-        """.trimIndent()
+        """
 
     val INSERT_EVENT_RELATED_IDENTIFIER =
         """
@@ -41,7 +43,18 @@ object Queries {
             :eventId, 
             :relatedIdentifierId
         )
-        """.trimIndent()
+        """
+
+    val INSERT_OWNER =
+        """
+        INSERT INTO Owner (
+            ownerId, 
+            name
+        ) VALUES (
+            :ownerId, 
+            :ownerId
+        )
+        """
 
     val SELECT_BY_EVENT_STREAM_ID =
         """
@@ -56,10 +69,11 @@ object Queries {
              data, 
              eventStreamId, 
              shouldSendToEventBus, 
-             ownerId
+             ownerId,
+             identityId
         FROM EventStore 
         WHERE eventStreamId = :eventStreamId;
-        """.trimIndent()
+        """
 
     val SELECT_BY_EVENT_ID_AND_OWNER_ID =
         """
@@ -74,9 +88,10 @@ object Queries {
              data, 
              eventStreamId, 
              shouldSendToEventBus, 
-             ownerId
+             ownerId,
+             identityId
         FROM EventStore 
         WHERE eventId = :eventId 
         AND ownerId = :ownerId;
-        """.trimIndent()
+        """
 }

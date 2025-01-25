@@ -1,16 +1,14 @@
 package com.eventhub.services.eventstore
 
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.toEventStreamId
-import com.eventhub.domain.eventstore.toEventStreamQueryResult
-import com.eventhub.ports.eventstore.EventStoreRepository
-import com.eventhub.ports.eventstore.EventStreamQueryResult
-import com.eventhub.ports.eventstore.EventStreamQueryService
+import com.eventhub.services.eventstore.EventStreamQueryResult
 import java.util.UUID
 
-class GetEventStreamService(
+open class GetEventStreamService(
     private val eventStoreRepository: EventStoreRepository,
-) : EventStreamQueryService {
-    override suspend fun get(eventStreamId: UUID): EventStreamQueryResult =
+) {
+    open suspend fun get(eventStreamId: UUID): EventStreamQueryResult =
         eventStreamId
             .toEventStreamId()
             .get(

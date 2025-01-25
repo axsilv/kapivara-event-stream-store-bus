@@ -2,18 +2,18 @@ package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.eventstore.Event.EventId
 import com.eventhub.domain.eventstore.Event.OwnerId
+import com.eventhub.domain.eventstore.EventData.RelatedIdentifier.RelatedIdentifierId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.ports.eventstore.AddEvent
-import com.eventhub.ports.eventstore.EventQueryResult
-import com.eventhub.ports.eventstore.EventQueryResult.EventDataQueryResult
-import com.eventhub.ports.eventstore.EventQueryResult.EventDataQueryResult.RelatedIdentifierQueryResult
-import com.eventhub.ports.eventstore.EventStore
-import com.eventhub.ports.eventstore.EventStreamQueryResult
+import com.eventhub.domain.eventstore.ports.EventStore
+import com.eventhub.domain.eventstore.ports.toEventId
+import com.eventhub.domain.eventstore.ports.toEventStreamId
+import com.eventhub.domain.eventstore.ports.toIdentityId
+import com.eventhub.domain.eventstore.ports.toOwnerId
 import java.util.UUID
 
 fun EventStore.toEvent() =
     Event(
-        eventId = EventId(eventId),
+        eventId = eventId.toEventId(),
         metadata = metadata,
         occurredOn = occurredOn,
         eventData =
@@ -30,80 +30,34 @@ fun EventStore.toEvent() =
                     },
                 data = data,
             ),
-        eventStreamId = EventStreamId(value = eventStreamId),
+        eventStreamId = eventStreamId.toEventStreamId(),
         shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = OwnerId(ownerId),
+        ownerId = ownerId.toOwnerId(),
+        identityId = identityId.toIdentityId(),
     )
+
+fun String.toRelatedIdentifierId(): RelatedIdentifierId = UUID.fromString(this).toRelatedIdentifierId()
 
 fun Event.toEventStore() =
     EventStore(
-        eventId = eventId.toUUID(),
+        eventId = eventId.toEventId(),
         metadata = metadata,
         occurredOn = occurredOn,
         owner = eventData.owner,
         type = eventData.type,
         alias = eventData.alias,
-        relatedIdentifiers = eventData.relatedIdentifiers.associate { it.relatedIdentifierId.value to it.owner },
+        relatedIdentifiers = eventData.relatedIdentifiers.associate { it.relatedIdentifierId.toString() to it.owner },
         data = eventData.data,
-        eventStreamId = eventStreamId.toUUID(),
+        eventStreamId = eventStreamId.toEventStreamId(),
         shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = ownerId.toUUID(),
+        ownerId = ownerId.toOwnerId(),
+        identityId = identityId.toIdentityId(),
     )
 
 fun UUID.toEventId(): EventId = EventId(value = this)
 
 fun UUID.toEventStreamId(): EventStreamId = EventStreamId(value = this)
 
-fun Event.toEventQueryResult(): EventQueryResult =
-    EventQueryResult(
-        eventId = eventId.toUUID(),
-        metadata = metadata,
-        occurredOn = occurredOn,
-        eventData =
-            EventDataQueryResult(
-                owner = eventData.owner,
-                type = eventData.type,
-                alias = eventData.alias,
-                relatedIdentifiers =
-                    eventData.relatedIdentifiers.map { (key, value) ->
-                        RelatedIdentifierQueryResult(
-                            owner = value,
-                            relatedIdentifierId = key.toUUID(),
-                        )
-                    },
-                data = eventData.data,
-            ),
-        eventStreamId = eventStreamId.toUUID(),
-        shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = ownerId.toUUID(),
-    )
+fun UUID.toOwnerId() = OwnerId(value = this)
 
-fun EventStream.toEventStreamQueryResult() =
-    EventStreamQueryResult(
-        eventStreamId = eventStreamId.toUUID(),
-        events = events.map { it.toEventQueryResult() },
-    )
-
-fun AddEvent.toEvent(): Event =
-    Event(
-        eventId = EventId(eventId),
-        metadata = metadata,
-        occurredOn = occurredOn,
-        eventData =
-            EventData(
-                owner = owner,
-                type = type,
-                alias = alias,
-                relatedIdentifiers =
-                    relatedIdentifiers.map { (key, value) ->
-                        EventData.RelatedIdentifier(
-                            owner = value,
-                            relatedIdentifierId = key.toRelatedIdentifierId(),
-                        )
-                    },
-                data = data,
-            ),
-        eventStreamId = EventStreamId(value = eventStreamId),
-        shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = OwnerId(ownerId),
-    )
+fun UUID.toIdentityId() = Event.IdentityId(value = this)

@@ -1,7 +1,6 @@
-package com.eventhub.ports.eventstore
+package com.eventhub.services.eventstore
 
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.JsonElement
 import java.util.UUID
 
 data class EventQueryResult(
@@ -18,7 +17,7 @@ data class EventQueryResult(
         val type: String,
         val alias: String,
         val relatedIdentifiers: List<RelatedIdentifierQueryResult>,
-        val data: JsonElement,
+        val data: String,
     ) {
         data class RelatedIdentifierQueryResult(
             val relatedIdentifierId: UUID,

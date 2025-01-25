@@ -1,71 +1,57 @@
 package com.kapivara.eventhub.adapters.databases.r2dbc.postgresql
 
-import com.eventhub.ports.eventstore.EventStore
-import com.eventhub.ports.eventstore.EventStoreRepository
-import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.INSERT_EVENT_RELATED_IDENTIFIER
+import com.eventhub.domain.eventstore.ports.EventStore
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.INSERT_EVENT_STORE
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.SELECT_BY_EVENT_ID_AND_OWNER_ID
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.SELECT_BY_EVENT_STREAM_ID
 import io.r2dbc.spi.Row
-import java.util.UUID
 import kotlinx.coroutines.flow.toList
-import kotlinx.datetime.Instant
-import kotlinx.serialization.json.JsonElement
+import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toKotlinInstant
+import kotlinx.serialization.json.Json
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.r2dbc.core.awaitOneOrNull
+import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.r2dbc.core.flow
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Repository
 class R2dbcEventStoreRepository(
     private val db: DatabaseClient,
 ) : EventStoreRepository {
+    @Transactional(rollbackFor = [Throwable::class])
     override suspend fun add(eventStore: EventStore) {
         db
             .sql(INSERT_EVENT_STORE)
             .bind("eventId", eventStore.eventId)
-            .bind("metadata", eventStore.metadata)
-            .bind("occurredOn", eventStore.occurredOn)
+            .bind("metadata", Json.encodeToString(eventStore.metadata))
+            .bind("occurredOn", eventStore.occurredOn.toJavaInstant())
             .bind("owner", eventStore.owner)
             .bind("type", eventStore.type)
             .bind("alias", eventStore.alias)
-            .bind("relatedIdentifiers", eventStore.relatedIdentifiers)
-            .bind("data", eventStore.data)
+            .bind("relatedIdentifiers", Json.encodeToString(eventStore.relatedIdentifiers))
+            .bind("data", Json.encodeToString(eventStore.data))
             .bind("eventStreamId", eventStore.eventStreamId)
             .bind("shouldSendToEventBus", eventStore.shouldSendToEventBus)
             .bind("ownerId", eventStore.ownerId)
+            .bind("identityId", eventStore.identityId)
             .fetch()
-            .rowsUpdated()
-
-        eventStore.relatedIdentifiers.forEach { (key, _) ->
-            db
-                .sql(INSERT_EVENT_RELATED_IDENTIFIER)
-                .bind("id", UUID.randomUUID())
-                .bind("eventId", eventStore.eventId)
-                .bind("relatedIdentifierId", key)
-                .fetch()
-        }
+            .awaitRowsUpdated()
     }
 
-    override suspend fun get(eventId: UUID): EventStore? =
+    override suspend fun get(
+        eventId: UUID,
+        ownerId: UUID,
+    ): EventStore? =
         db
             .sql(SELECT_BY_EVENT_ID_AND_OWNER_ID)
             .bind("eventId", eventId)
-            .bind("ownerId", "")
+            .bind("ownerId", ownerId)
             .map { row, _ ->
-                EventStore(
-                    eventId = row["eventId", UUID::class.java]!!,
-                    metadata = rowToMetadata(row),
-                    occurredOn = row["occurredOn", Instant::class.java]!!,
-                    owner = row["owner", String::class.java]!!,
-                    type = row["type", String::class.java]!!,
-                    alias = row["alias", String::class.java]!!,
-                    relatedIdentifiers = rowToRelatedIdentifiers(row),
-                    data = row["data", JsonElement::class.java]!!,
-                    eventStreamId = row["eventStreamId", UUID::class.java]!!,
-                    shouldSendToEventBus = row["shouldSendToEventBus", Boolean::class.java]!!,
-                    ownerId = row["ownerId", UUID::class.java]!!,
-                )
+                rowToEventStore(row)
             }.awaitOneOrNull()
 
     override suspend fun getStream(eventStreamId: UUID): List<EventStore> =
@@ -73,25 +59,29 @@ class R2dbcEventStoreRepository(
             .sql(SELECT_BY_EVENT_STREAM_ID)
             .bind("eventStreamId", eventStreamId)
             .map { row, _ ->
-                EventStore(
-                    eventId = row["eventId", UUID::class.java]!!,
-                    metadata = rowToMetadata(row),
-                    occurredOn = row["occurredOn", Instant::class.java]!!,
-                    owner = row["owner", String::class.java]!!,
-                    type = row["type", String::class.java]!!,
-                    alias = row["alias", String::class.java]!!,
-                    relatedIdentifiers = rowToRelatedIdentifiers(row),
-                    data = row["data", JsonElement::class.java]!!,
-                    eventStreamId = row["eventStreamId", UUID::class.java]!!,
-                    shouldSendToEventBus = row["shouldSendToEventBus", Boolean::class.java]!!,
-                    ownerId = row["ownerId", UUID::class.java]!!,
-                )
+                rowToEventStore(row)
             }.flow()
             .toList()
 
-    @Suppress("UNCHECKED_CAST")
-    private fun rowToRelatedIdentifiers(row: Row): Map<UUID, String> = row["relatedIdentifiers", Map::class.java] as Map<UUID, String>
+    private fun rowToEventStore(row: Row): EventStore =
+        EventStore(
+            eventId = row["eventId", UUID::class.java]!!,
+            metadata = rowToStringMap(row),
+            occurredOn = (row["occurredOn", java.time.Instant::class.java]!!).toKotlinInstant(),
+            owner = row["owner", String::class.java]!!,
+            type = row["type", String::class.java]!!,
+            alias = row["alias", String::class.java]!!,
+            relatedIdentifiers = rowToStringMap(row),
+            data = row["data", String::class.java]!!,
+            eventStreamId = row["eventStreamId", UUID::class.java]!!,
+            shouldSendToEventBus = row["shouldSendToEventBus", Boolean::class.java]!!,
+            ownerId = row["ownerId", UUID::class.java]!!,
+            identityId = row["identityId", UUID::class.java]!!,
+        )
 
-    @Suppress("UNCHECKED_CAST")
-    private fun rowToMetadata(row: Row): Map<String, String> = row["metadata", Map::class.java] as Map<String, String>
+    private fun rowToStringMap(row: Row): Map<String, String> {
+        val json = row["relatedIdentifiers", String::class.java]!!
+
+        return Json.decodeFromString<Map<String, String>>(json)
+    }
 }

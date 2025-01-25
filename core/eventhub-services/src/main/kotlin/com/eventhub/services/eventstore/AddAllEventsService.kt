@@ -1,26 +1,29 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.toEvent
-import com.eventhub.ports.eventbus.EventBusClient
-import com.eventhub.ports.eventstore.AddEvent
-import com.eventhub.ports.eventstore.EventStoreRepository
-import com.eventhub.ports.eventstore.EventsCommandService
+import com.eventhub.domain.eventbus.BucketRepository
+import com.eventhub.domain.eventbus.EventBusRepository
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
+import com.eventhub.domain.eventstore.ports.EventStreamRepository
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-class AddAllEventsService(
+open class AddAllEventsService(
     private val eventStoreRepository: EventStoreRepository,
-    private val eventBusClient: EventBusClient,
-) : EventsCommandService {
-    override suspend fun addAll(addEvents: List<AddEvent>) =
+    private val eventBusRepository: EventBusRepository,
+    private val eventStreamRepository: EventStreamRepository,
+    private val bucketRepository: BucketRepository,
+) {
+    open suspend fun addAll(addEvents: List<AddEvent>) =
         coroutineScope {
             addEvents
                 .map { addEvent ->
                     launch {
                         addEvent.toEvent().add(
                             eventStoreRepository = eventStoreRepository,
-                            eventBusClient = eventBusClient,
+                            eventBusRepository = eventBusRepository,
+                            eventStreamRepository = eventStreamRepository,
+                            bucketRepository = bucketRepository,
                         )
                     }
                 }.joinAll()

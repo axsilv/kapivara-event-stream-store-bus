@@ -1,18 +1,18 @@
 package com.eventstore.commands.router
 
-import com.eventhub.ports.eventstore.AddEvent
-import com.eventhub.ports.eventstore.EventsCommandService
+import com.eventhub.services.eventstore.AddEvent
+import com.eventhub.spring.services.configurations.AddAllEventsSpringService
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.buildAndAwait
 
 class AddAllEventsHandler(
-    private val eventsCommandService: EventsCommandService,
+    private val service: AddAllEventsSpringService,
 ) {
     suspend fun addAll(serverRequest: ServerRequest): ServerResponse {
         val events = serverRequest.awaitBody<List<AddEvent>>()
-        eventsCommandService.addAll(addEvents = events)
+        service.addAll(addEvents = events)
         return ServerResponse.accepted().buildAndAwait()
     }
 }

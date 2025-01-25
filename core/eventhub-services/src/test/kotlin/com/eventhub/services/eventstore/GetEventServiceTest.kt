@@ -1,8 +1,10 @@
 package com.eventhub.services.eventstore
 
+import com.eventhub.domain.eventstore.Event
 import com.eventhub.domain.eventstore.Event.EventId
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.toEventId
-import com.eventhub.ports.eventstore.EventStoreRepository
+import com.eventhub.domain.eventstore.toOwnerId
 import com.eventhub.services.eventstore.EventTestFixture.event
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coEvery
@@ -27,17 +29,27 @@ class GetEventServiceTest :
                             )
                         val eventUuid = mockk<UUID>()
                         val eventId = mockk<EventId>()
+                        val ownerUuid = mockk<UUID>()
+                        val ownerId = mockk<Event.OwnerId>()
                         mockkStatic(UUID::toEventId)
+                        mockkStatic(UUID::toOwnerId)
 
                         every { eventUuid.toEventId() } returns eventId
+                        every { ownerUuid.toOwnerId() } returns ownerId
                         coEvery {
-                            eventId.get(any())
+                            eventId.get(any(), any())
                         } returns event()
 
-                        service.get(eventId = eventUuid)
+                        service.get(eventId = eventUuid, ownerId = ownerUuid)
 
                         verify { eventUuid.toEventId() }
-                        coVerify { eventId.get(eventStoreRepository = eventStoreRepository) }
+                        verify { ownerUuid.toOwnerId() }
+                        coVerify {
+                            eventId.get(
+                                eventStoreRepository = eventStoreRepository,
+                                ownerId = ownerId,
+                            )
+                        }
                         confirmVerified(eventStoreRepository, eventUuid, eventId)
                     }
                 }

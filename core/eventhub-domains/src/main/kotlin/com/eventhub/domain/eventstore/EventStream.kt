@@ -1,7 +1,7 @@
 package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.Identifier
-import com.eventhub.ports.eventstore.EventStoreRepository
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import java.util.UUID
 
 data class EventStream(

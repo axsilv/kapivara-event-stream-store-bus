@@ -1,4 +1,4 @@
-package com.eventhub.ports.eventstore
+package com.eventhub.services.eventstore
 
 import java.util.UUID
 

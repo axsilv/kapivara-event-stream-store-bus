@@ -1,10 +1,9 @@
 package com.eventhub.services.eventstore
 
+import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.Event
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.toEvent
-import com.eventhub.ports.eventbus.EventBusClient
-import com.eventhub.ports.eventstore.AddEvent
-import com.eventhub.ports.eventstore.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -22,11 +21,11 @@ class AddAllEventsServiceTest :
                 `when`("Calls add all") {
                     then("Just run") {
                         val eventStoreRepository = mockk<EventStoreRepository>()
-                        val eventBusClient = mockk<EventBusClient>()
+                        val eventBusRepository = mockk<EventBusRepository>()
                         val service =
                             AddAllEventsService(
                                 eventStoreRepository = eventStoreRepository,
-                                eventBusClient = eventBusClient,
+                                eventBusRepository = eventBusRepository,
                             )
                         val event = mockk<Event>()
                         val addEvent = mockk<AddEvent>()
@@ -36,7 +35,7 @@ class AddAllEventsServiceTest :
                         coJustRun {
                             event.add(
                                 eventStoreRepository = any(),
-                                eventBusClient = any(),
+                                eventBusRepository = any(),
                             )
                         }
 
@@ -46,7 +45,7 @@ class AddAllEventsServiceTest :
                         coVerify {
                             event.add(
                                 eventStoreRepository = eventStoreRepository,
-                                eventBusClient = eventBusClient,
+                                eventBusRepository = eventBusRepository,
                             )
                         }
                         confirmVerified(event, addEvent)

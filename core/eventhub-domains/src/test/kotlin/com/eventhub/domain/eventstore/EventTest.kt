@@ -1,10 +1,11 @@
 package com.eventhub.domain.eventstore
 
+import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.EventTestFixture.event
 import com.eventhub.domain.eventstore.EventTestFixture.eventStore
 import com.eventhub.domain.eventstore.EventTestFixture.eventUuid
-import com.eventhub.ports.eventbus.EventBusClient
-import com.eventhub.ports.eventstore.EventStoreRepository
+import com.eventhub.domain.eventstore.EventTestFixture.ownerId
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -27,7 +28,7 @@ class EventTest :
 
                         event.add(
                             eventStoreRepository = eventStoreRepository,
-                            eventBusClient = mockk(),
+                            eventBusRepository = mockk(),
                         )
 
                         coVerify { eventStoreRepository.add(any()) }
@@ -39,19 +40,19 @@ class EventTest :
                     then("Should call event repository at add fun") {
                         val event = event(shouldSendToEventBus = true)
                         val eventStoreRepository = mockk<EventStoreRepository>()
-                        val eventBusClient = mockk<EventBusClient>()
+                        val eventBusRepository = mockk<EventBusRepository>()
 
                         coJustRun { eventStoreRepository.add(any()) }
-                        coJustRun { eventBusClient.send().await() }
+                        coJustRun { eventBusRepository.send().await() }
 
                         event.add(
                             eventStoreRepository = eventStoreRepository,
-                            eventBusClient = eventBusClient,
+                            eventBusRepository = eventBusRepository,
                         )
 
                         coVerify { eventStoreRepository.add(any()) }
-                        coVerify { eventBusClient.send().await() }
-                        confirmVerified(eventStoreRepository, eventBusClient)
+                        coVerify { eventBusRepository.send().await() }
+                        confirmVerified(eventStoreRepository, eventBusRepository)
                     }
                 }
 
@@ -59,15 +60,16 @@ class EventTest :
                     then("Should return the event") {
                         val eventStoreRepository = mockk<EventStoreRepository>()
 
-                        coEvery { eventStoreRepository.get(any()) } returns eventStore()
+                        coEvery { eventStoreRepository.get(any(), any()) } returns eventStore()
 
                         eventUuid
                             .toEventId()
                             .get(
                                 eventStoreRepository = eventStoreRepository,
+                                ownerId = Event.OwnerId(ownerId),
                             ) shouldBe event(shouldSendToEventBus = true)
 
-                        coVerify { eventStoreRepository.get(any()) }
+                        coVerify { eventStoreRepository.get(any(), any()) }
                         confirmVerified(eventStoreRepository)
                     }
                 }

@@ -4,7 +4,7 @@ import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.domain.eventstore.EventStreamTestFixture.eventStream
 import com.eventhub.domain.eventstore.EventTestFixture.eventStore
 import com.eventhub.domain.eventstore.EventTestFixture.eventStreamUuid
-import com.eventhub.ports.eventstore.EventStoreRepository
+import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery

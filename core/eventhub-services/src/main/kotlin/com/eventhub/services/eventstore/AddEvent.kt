@@ -1,7 +1,6 @@
-package com.eventhub.ports.eventstore
+package com.eventhub.services.eventstore
 
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.JsonElement
 import java.util.UUID
 
 data class AddEvent(
@@ -12,8 +11,9 @@ data class AddEvent(
     val type: String,
     val alias: String,
     val relatedIdentifiers: Map<UUID, String>,
-    val data: JsonElement,
+    val data: String,
     val eventStreamId: UUID,
     val shouldSendToEventBus: Boolean,
     val ownerId: UUID,
+    val identityId: UUID,
 )
