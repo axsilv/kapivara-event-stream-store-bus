@@ -1,7 +1,6 @@
 package com.eventhub.services.eventstore
 
 import com.eventhub.domain.eventbus.BucketRepository
-import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
 import kotlinx.coroutines.coroutineScope
@@ -19,7 +18,7 @@ open class AddAllEventsService(
             addEvents
                 .map { addEvent ->
                     launch {
-                        addEvent.toEvent().add(
+                        addEvent.toEvent().store(
                             eventStoreRepository = eventStoreRepository,
                             eventBusRepository = eventBusRepository,
                             eventStreamRepository = eventStreamRepository,

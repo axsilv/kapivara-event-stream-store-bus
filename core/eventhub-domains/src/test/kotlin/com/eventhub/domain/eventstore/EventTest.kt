@@ -1,6 +1,5 @@
 package com.eventhub.domain.eventstore
 
-import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.EventTestFixture.event
 import com.eventhub.domain.eventstore.EventTestFixture.eventStore
 import com.eventhub.domain.eventstore.EventTestFixture.eventUuid
@@ -26,7 +25,7 @@ class EventTest :
 
                         coJustRun { eventStoreRepository.store(any()) }
 
-                        event.add(
+                        event.store(
                             eventStoreRepository = eventStoreRepository,
                             eventBusRepository = mockk(),
                         )
@@ -45,7 +44,7 @@ class EventTest :
                         coJustRun { eventStoreRepository.store(any()) }
                         coJustRun { eventBusRepository.send().await() }
 
-                        event.add(
+                        event.store(
                             eventStoreRepository = eventStoreRepository,
                             eventBusRepository = eventBusRepository,
                         )

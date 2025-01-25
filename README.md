@@ -32,14 +32,14 @@ Kapivara EventHub is a service developed as part of personal studies to explore 
 
 ## Event Bus
 
-- **Bucket-Based Organization**: Events are distributed into multiple buckets, with each consumer assigned specific buckets.
-- **Deterministic Assignment**: Events for a specific consumer are always routed to the same bucket.
-- **Commit Mechanism**: Consumers must commit after retrieving events to ensure reliable processing.
-- **Data Retrieval**: Consumers can retrieve events using various strategies:
+- **Bucket-Based Organization**: Events are distributed into multiple buckets.
+- **Deterministic Assignment**: Events for a specific owner are always routed to the same bucket.
+- **Commit Mechanism**: Owners must commit after retrieving events to ensure reliable processing.
+- **Data Retrieval**: Owners can retrieve events using various strategies:
     - All events in a specific bucket.
     - The last committed event in a bucket.
     - Events associated with a specific stream.
-    - All events across the consumer’s assigned buckets.
+    - All events across the owner’s assigned buckets.
 - **Single Application Node per Bucket**: Each bucket is exclusively assigned to one application node to prevent conflicts.
-- **Subscription Model**: Consumers must subscribe to buckets using a unique key.
+- **Subscription Model**: Owners must subscribe to buckets using a unique key.
 

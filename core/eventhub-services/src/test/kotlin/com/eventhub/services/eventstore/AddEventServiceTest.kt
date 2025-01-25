@@ -1,9 +1,7 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.Event
 import com.eventhub.domain.eventstore.ports.EventStoreRepository
-import com.eventhub.domain.eventstore.toEvent
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -36,7 +34,7 @@ class AddEventServiceTest :
                         } returns event
 
                         coJustRun {
-                            event.add(
+                            event.store(
                                 eventStoreRepository = eventStoreRepository,
                                 eventBusRepository = eventBusRepository,
                             )
@@ -46,7 +44,7 @@ class AddEventServiceTest :
 
                         verify { addEvent.toEvent() }
                         coVerify {
-                            event.add(
+                            event.store(
                                 eventStoreRepository = eventStoreRepository,
                                 eventBusRepository = eventBusRepository,
                             )

@@ -1,10 +1,8 @@
 package com.eventhub.services.eventstore
 
 import com.eventhub.domain.eventbus.BucketRepository
-import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
-import com.eventhub.domain.eventstore.toEvent
 
 open class AddEventService(
     private val eventStoreRepository: EventStoreRepository,
@@ -15,7 +13,7 @@ open class AddEventService(
     open suspend fun add(addEvent: AddEvent) =
         addEvent
             .toEvent()
-            .add(
+            .store(
                 eventStoreRepository = eventStoreRepository,
                 eventBusRepository = eventBusRepository,
                 eventStreamRepository = eventStreamRepository,

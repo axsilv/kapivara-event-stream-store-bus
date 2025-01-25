@@ -3,10 +3,14 @@ package com.eventhub.domain.eventstore
 import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventbus.Bucket.BucketId
 import com.eventhub.domain.eventbus.BucketRepository
-import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
+import com.eventhub.domain.eventstore.ports.IdentityRepository
+import com.eventhub.domain.eventstore.ports.RelatedIdentifierRepository
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import java.util.UUID
@@ -42,11 +46,12 @@ data class Event(
         private val value: UUID,
     ) : Identifier(value = value)
 
-    suspend fun add(
+    suspend fun store(
         eventStoreRepository: EventStoreRepository,
-        eventBusRepository: EventBusRepository,
         eventStreamRepository: EventStreamRepository,
         bucketRepository: BucketRepository,
+        identityRepository: IdentityRepository,
+        relatedIdentifierRepository: RelatedIdentifierRepository,
     ) {
         message.checkJson()
 
@@ -54,10 +59,29 @@ data class Event(
 
         checkEventStreamBucket(bucketRepository)
 
-        // check identity
+        checkIdentity(identityRepository)
 
         eventStoreRepository.store(this.toEventStore())
-        // store related identifiers for each
+
+        storeRelatedIdentifiers(relatedIdentifierRepository) // trocar nomenclatura para correlation ids
+    }
+
+    private suspend fun storeRelatedIdentifiers(relatedIdentifierRepository: RelatedIdentifierRepository) {
+        message
+            .relatedIdentifiers
+            .map { identifier ->
+                coroutineScope {
+                    launch {
+                        relatedIdentifierRepository.store(identifier)
+                    }
+                }
+            }.joinAll()
+    }
+
+    private suspend fun checkIdentity(identityRepository: IdentityRepository) {
+        if (identityRepository.exists(identityId).not()) {
+            throw RuntimeException() // todo
+        }
     }
 
     private suspend fun checkEventStreamBucket(bucketRepository: BucketRepository): BucketId {
