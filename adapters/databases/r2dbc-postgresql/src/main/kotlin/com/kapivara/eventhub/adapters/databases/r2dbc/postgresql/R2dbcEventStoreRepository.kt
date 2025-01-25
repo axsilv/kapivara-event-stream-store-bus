@@ -23,7 +23,7 @@ class R2dbcEventStoreRepository(
     private val db: DatabaseClient,
 ) : EventStoreRepository {
     @Transactional(rollbackFor = [Throwable::class])
-    override suspend fun add(eventStore: EventStore) {
+    override suspend fun store(eventStore: EventStore) {
         db
             .sql(INSERT_EVENT_STORE)
             .bind("eventId", eventStore.eventId)

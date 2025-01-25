@@ -1,8 +1,8 @@
 package com.eventhub.services.eventstore
 
 import com.eventhub.domain.eventstore.Event
-import com.eventhub.domain.eventstore.EventData
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toOwnerId
 import kotlinx.datetime.Clock
@@ -22,8 +22,8 @@ object EventTestFixture {
             eventId = eventUuid.toEventId(),
             metadata = mapOf(),
             occurredOn = occurredOn,
-            eventData =
-                EventData(
+            message =
+                Message(
                     owner = "test_owner",
                     type = "test_type",
                     alias = "test_alias",

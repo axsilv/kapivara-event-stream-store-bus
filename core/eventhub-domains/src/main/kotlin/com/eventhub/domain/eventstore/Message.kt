@@ -1,10 +1,10 @@
 package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventstore.EventData.RelatedIdentifier.RelatedIdentifierId
+import com.eventhub.domain.eventstore.Message.RelatedIdentifier.RelatedIdentifierId
 import java.util.UUID
 
-data class EventData(
+data class Message(
     val owner: String,
     val type: String,
     val alias: String,

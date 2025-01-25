@@ -1,31 +1,27 @@
 package com.eventhub.domain.eventbus
 
-import com.eventhub.domain.eventstore.ports.EventStore.EventStreamId
-import java.util.UUID
+import com.eventhub.domain.eventbus.Bucket.BucketId
+import com.eventhub.domain.eventstore.Event
+import com.eventhub.domain.eventstore.EventStream.EventStreamId
 
 interface BucketRepository {
-    suspend fun add(
-        bucketId: Bucket.BucketId,
-        eventStreamId: UUID,
-    )
-
-    suspend fun addStream(
-        bucketId: Bucket.BucketId,
+    suspend fun store(
+        bucketId: BucketId,
         eventStreamId: EventStreamId,
     )
 
-    suspend fun get(eventStreamId: EventStreamId): Bucket.BucketId?
+    suspend fun fetch(eventStreamId: EventStreamId): BucketId?
 
-    suspend fun get(
-        bucketId: Bucket.BucketId,
+    suspend fun fetch(
+        bucketId: BucketId,
         eventStreamId: EventStreamId,
-    ): Bucket.BucketId?
+    ): BucketId?
 
-    suspend fun get(
-        bucketId: Bucket.BucketId,
+    suspend fun fetch(
+        bucketId: BucketId,
         eventStreamId: EventStreamId,
-        eventId: UUID,
-    ): Bucket.BucketId?
+        eventId: Event.EventId,
+    ): BucketId?
 
-    suspend fun get(ownerId: UUID): List<Bucket.BucketId>
+    suspend fun fetch(ownerId: Event.OwnerId): List<BucketId>
 }

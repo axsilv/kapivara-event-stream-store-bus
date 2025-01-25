@@ -2,13 +2,9 @@ package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.eventstore.Event.EventId
 import com.eventhub.domain.eventstore.Event.OwnerId
-import com.eventhub.domain.eventstore.EventData.RelatedIdentifier.RelatedIdentifierId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Message.RelatedIdentifier.RelatedIdentifierId
 import com.eventhub.domain.eventstore.ports.EventStore
-import com.eventhub.domain.eventstore.ports.toEventId
-import com.eventhub.domain.eventstore.ports.toEventStreamId
-import com.eventhub.domain.eventstore.ports.toIdentityId
-import com.eventhub.domain.eventstore.ports.toOwnerId
 import java.util.UUID
 
 fun EventStore.toEvent() =
@@ -16,14 +12,14 @@ fun EventStore.toEvent() =
         eventId = eventId.toEventId(),
         metadata = metadata,
         occurredOn = occurredOn,
-        eventData =
-            EventData(
+        message =
+            Message(
                 owner = owner,
                 type = type,
                 alias = alias,
                 relatedIdentifiers =
                     relatedIdentifiers.map { (key, value) ->
-                        EventData.RelatedIdentifier(
+                        Message.RelatedIdentifier(
                             owner = value,
                             relatedIdentifierId = key.toRelatedIdentifierId(),
                         )
@@ -43,11 +39,11 @@ fun Event.toEventStore() =
         eventId = eventId.toEventId(),
         metadata = metadata,
         occurredOn = occurredOn,
-        owner = eventData.owner,
-        type = eventData.type,
-        alias = eventData.alias,
-        relatedIdentifiers = eventData.relatedIdentifiers.associate { it.relatedIdentifierId.toString() to it.owner },
-        data = eventData.data,
+        owner = message.owner,
+        type = message.type,
+        alias = message.alias,
+        relatedIdentifiers = message.relatedIdentifiers.associate { it.relatedIdentifierId.toString() to it.owner },
+        data = message.data,
         eventStreamId = eventStreamId.toEventStreamId(),
         shouldSendToEventBus = shouldSendToEventBus,
         ownerId = ownerId.toOwnerId(),

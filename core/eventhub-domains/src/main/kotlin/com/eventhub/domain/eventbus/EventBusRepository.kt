@@ -1,5 +1,5 @@
 package com.eventhub.domain.eventbus
 
 interface EventBusRepository {
-    suspend fun add()
+    suspend fun store()
 }

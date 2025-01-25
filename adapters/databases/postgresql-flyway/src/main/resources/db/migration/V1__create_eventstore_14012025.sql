@@ -13,8 +13,7 @@ CREATE TABLE EventStream (
 
 CREATE TABLE Identity (
     identityId UUID PRIMARY KEY,
-    ownerId UUID,
-    FOREIGN KEY (ownerId) REFERENCES Owner(ownerId)
+    name VARCHAR(255) NOT NULL UNIQUE,
 );
 
 CREATE TABLE EventStore (

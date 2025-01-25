@@ -20,8 +20,8 @@ object EventTestFixture {
             eventId = eventUuid.toEventId(),
             metadata = mapOf(),
             occurredOn = occurredOn,
-            eventData =
-                EventData(
+            message =
+                Message(
                     owner = "test_owner",
                     type = "test_type",
                     alias = "test_alias",

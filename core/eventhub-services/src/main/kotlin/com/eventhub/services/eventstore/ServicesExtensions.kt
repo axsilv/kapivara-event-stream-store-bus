@@ -2,29 +2,28 @@ package com.eventhub.services.eventstore
 
 import com.eventhub.domain.eventstore.Event
 import com.eventhub.domain.eventstore.Event.EventId
-import com.eventhub.domain.eventstore.EventData
 import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toIdentityId
 import com.eventhub.domain.eventstore.toOwnerId
 import com.eventhub.domain.eventstore.toRelatedIdentifierId
 import com.eventhub.services.eventstore.EventQueryResult.EventDataQueryResult
 import com.eventhub.services.eventstore.EventQueryResult.EventDataQueryResult.RelatedIdentifierQueryResult
-import com.eventhub.services.eventstore.EventStreamQueryResult
 
 fun AddEvent.toEvent(): Event =
     Event(
         eventId = EventId(eventId),
         metadata = metadata,
         occurredOn = occurredOn,
-        eventData =
-            EventData(
+        message =
+            Message(
                 owner = owner,
                 type = type,
                 alias = alias,
                 relatedIdentifiers =
                     relatedIdentifiers.map { (key, value) ->
-                        EventData.RelatedIdentifier(
+                        Message.RelatedIdentifier(
                             owner = value,
                             relatedIdentifierId = key.toRelatedIdentifierId(),
                         )
@@ -44,17 +43,17 @@ fun Event.toEventQueryResult(): EventQueryResult =
         occurredOn = occurredOn,
         eventData =
             EventDataQueryResult(
-                owner = eventData.owner,
-                type = eventData.type,
-                alias = eventData.alias,
+                owner = message.owner,
+                type = message.type,
+                alias = message.alias,
                 relatedIdentifiers =
-                    eventData.relatedIdentifiers.map { (key, value) ->
+                    message.relatedIdentifiers.map { (key, value) ->
                         RelatedIdentifierQueryResult(
                             owner = value,
                             relatedIdentifierId = key.toUUID(),
                         )
                     },
-                data = eventData.data,
+                data = message.data,
             ),
         eventStreamId = eventStreamId.toUUID(),
         shouldSendToEventBus = shouldSendToEventBus,

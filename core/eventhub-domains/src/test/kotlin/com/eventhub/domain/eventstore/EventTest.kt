@@ -24,14 +24,14 @@ class EventTest :
                         val event = event(shouldSendToEventBus = false)
                         val eventStoreRepository = mockk<EventStoreRepository>()
 
-                        coJustRun { eventStoreRepository.add(any()) }
+                        coJustRun { eventStoreRepository.store(any()) }
 
                         event.add(
                             eventStoreRepository = eventStoreRepository,
                             eventBusRepository = mockk(),
                         )
 
-                        coVerify { eventStoreRepository.add(any()) }
+                        coVerify { eventStoreRepository.store(any()) }
                         confirmVerified(eventStoreRepository)
                     }
                 }
@@ -42,7 +42,7 @@ class EventTest :
                         val eventStoreRepository = mockk<EventStoreRepository>()
                         val eventBusRepository = mockk<EventBusRepository>()
 
-                        coJustRun { eventStoreRepository.add(any()) }
+                        coJustRun { eventStoreRepository.store(any()) }
                         coJustRun { eventBusRepository.send().await() }
 
                         event.add(
@@ -50,7 +50,7 @@ class EventTest :
                             eventBusRepository = eventBusRepository,
                         )
 
-                        coVerify { eventStoreRepository.add(any()) }
+                        coVerify { eventStoreRepository.store(any()) }
                         coVerify { eventBusRepository.send().await() }
                         confirmVerified(eventStoreRepository, eventBusRepository)
                     }
@@ -60,7 +60,7 @@ class EventTest :
                     then("Should return the event") {
                         val eventStoreRepository = mockk<EventStoreRepository>()
 
-                        coEvery { eventStoreRepository.get(any(), any()) } returns eventStore()
+                        coEvery { eventStoreRepository.fetch(any(), any()) } returns eventStore()
 
                         eventUuid
                             .toEventId()
@@ -69,7 +69,7 @@ class EventTest :
                                 ownerId = Event.OwnerId(ownerId),
                             ) shouldBe event(shouldSendToEventBus = true)
 
-                        coVerify { eventStoreRepository.get(any(), any()) }
+                        coVerify { eventStoreRepository.fetch(any(), any()) }
                         confirmVerified(eventStoreRepository)
                     }
                 }

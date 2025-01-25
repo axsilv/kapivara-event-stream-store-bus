@@ -2,6 +2,7 @@ package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventstore.ports.EventStoreRepository
+import com.eventhub.domain.eventstore.ports.EventStreamRepository
 import java.util.UUID
 
 data class EventStream(
@@ -16,8 +17,10 @@ data class EventStream(
                 eventStreamId = this,
                 events =
                     eventStoreRepository
-                        .getStream(eventStreamId = this.toUUID())
+                        .getStream(eventStreamId = this)
                         .map { it.toEvent() },
             )
+
+        suspend fun exists(eventStreamRepository: EventStreamRepository) = eventStreamRepository.exists(eventStreamId = this)
     }
 }

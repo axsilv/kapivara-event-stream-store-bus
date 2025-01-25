@@ -1,14 +1,13 @@
 package com.eventhub.domain.eventstore.ports
 
-import java.util.UUID
+import com.eventhub.domain.eventstore.Event.EventId
+import com.eventhub.domain.eventstore.Event.OwnerId
 
 interface EventStoreRepository {
-    suspend fun add(eventStore: EventStore)
+    suspend fun store(eventStore: EventStore)
 
-    suspend fun get(
-        eventId: UUID,
-        ownerId: UUID,
+    suspend fun fetch(
+        eventId: EventId,
+        ownerId: OwnerId,
     ): EventStore?
-
-    suspend fun getStream(eventStreamId: UUID): List<EventStore>
 }

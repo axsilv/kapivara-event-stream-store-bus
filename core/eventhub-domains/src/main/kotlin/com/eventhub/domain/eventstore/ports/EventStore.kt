@@ -1,8 +1,10 @@
 package com.eventhub.domain.eventstore.ports
 
-import com.eventhub.domain.Identifier
+import com.eventhub.domain.eventstore.Event.EventId
+import com.eventhub.domain.eventstore.Event.IdentityId
+import com.eventhub.domain.eventstore.Event.OwnerId
+import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import kotlinx.datetime.Instant
-import java.util.UUID
 
 data class EventStore(
     val eventId: EventId,
@@ -17,20 +19,4 @@ data class EventStore(
     val shouldSendToEventBus: Boolean,
     val ownerId: OwnerId,
     val identityId: IdentityId,
-) {
-    data class OwnerId(
-        private val value: UUID,
-    ) : Identifier(value = value)
-
-    data class IdentityId(
-        private val value: UUID,
-    ) : Identifier(value = value)
-
-    data class EventStreamId(
-        private val value: UUID,
-    ) : Identifier(value = value)
-
-    data class EventId(
-        private val value: UUID,
-    ) : Identifier(value = value)
-}
+)

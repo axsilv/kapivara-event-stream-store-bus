@@ -28,7 +28,7 @@ class R2dbcEventStoreRepositoryTest :
 
                         val repository = R2dbcEventStoreRepository(db)
 
-                        repository.add(eventStore = eventStore)
+                        repository.store(eventStore = eventStore)
 
                         val event1 = repository.get(eventId = eventId, ownerId = ownerId)!!
 

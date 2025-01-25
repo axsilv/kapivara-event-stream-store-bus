@@ -1,6 +1,7 @@
 package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.Identifier
+import com.eventhub.domain.eventbus.Bucket.BucketId
 import com.eventhub.domain.eventbus.BucketRepository
 import com.eventhub.domain.eventbus.EventBusRepository
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
@@ -14,7 +15,7 @@ data class Event(
     val eventId: EventId,
     val metadata: Map<String, String>,
     val occurredOn: Instant,
-    val eventData: EventData,
+    val message: Message,
     val eventStreamId: EventStreamId,
     val shouldSendToEventBus: Boolean,
     val ownerId: OwnerId,
@@ -27,9 +28,9 @@ data class Event(
             eventStoreRepository: EventStoreRepository,
             ownerId: OwnerId,
         ) = eventStoreRepository
-            .get(
-                eventId = this.toUUID(),
-                ownerId = ownerId.toUUID(),
+            .fetch(
+                eventId = this,
+                ownerId = ownerId,
             )?.toEvent()
     }
 
@@ -47,31 +48,46 @@ data class Event(
         eventStreamRepository: EventStreamRepository,
         bucketRepository: BucketRepository,
     ) {
-        validateIfDataIsJson()
+        message.checkJson()
 
-        val bucket =
-            bucketRepository.get(
-                eventStreamId = eventStreamId.toUUID(),
-            )
+        checkEventStreamOwnership(eventStreamRepository)
 
-        if (bucket == null) {
-            val bucketId =
+        checkEventStreamBucket(bucketRepository)
 
-                bucketRepository.add(
-                    bucketId = eventStreamId,
-                    eventStreamId = eventStreamId.toUUID(),
-                )
-        }
+        // check identity
 
-        eventStreamRepository.add(
-            eventStreamId = eventStreamId.toUUID(),
-            ownerId = ownerId.toUUID(),
-        )
-
-        eventStoreRepository.add(eventStore = this.toEventStore())
-
-        eventBusRepository.add()
+        eventStoreRepository.store(this.toEventStore())
+        // store related identifiers for each
     }
 
-    private fun validateIfDataIsJson() = Json.parseToJsonElement(this.eventData.data)
+    private suspend fun checkEventStreamBucket(bucketRepository: BucketRepository): BucketId {
+        bucketRepository.fetch(eventStreamId)?.let {
+            return it
+        }
+
+        val bucketId =
+            bucketRepository
+                .fetch(ownerId)
+                .random()
+
+        bucketRepository.store(
+            bucketId,
+            eventStreamId,
+        )
+
+        return bucketId
+    }
+
+    private suspend fun checkEventStreamOwnership(eventStreamRepository: EventStreamRepository) {
+        val eventStreamExists = eventStreamId.exists(eventStreamRepository)
+
+        if (eventStreamExists.not()) {
+            eventStreamRepository.store(
+                eventStreamId,
+                ownerId,
+            )
+        }
+    }
+
+    private fun Message.checkJson() = Json.parseToJsonElement(this.data)
 }
