@@ -10,7 +10,7 @@ import kotlinx.coroutines.coroutineScope
 import java.util.UUID
 
 data class EventBusBucket(
-    val id: BucketId,
+    val id: EventBusBucketId,
     val subscriberId: SubscriberId,
     val streams: List<EventStreamAggregator>,
 ) {
@@ -19,7 +19,7 @@ data class EventBusBucket(
             subscriberId: SubscriberId,
             quantity: Long,
             eventBusBucketRepository: EventBusBucketRepository,
-        ): List<BucketId> =
+        ): List<EventBusBucketId> =
             coroutineScope {
                 (0..quantity)
                     .map {
@@ -37,7 +37,7 @@ data class EventBusBucket(
         suspend fun generateCanary(
             subscriberId: SubscriberId,
             eventBusBucketRepository: EventBusBucketRepository,
-        ): BucketId {
+        ): EventBusBucketId {
             val bucketId = UUID.randomUUID().toBucketId()
 
             eventBusBucketRepository.store(
@@ -53,7 +53,7 @@ data class EventBusBucket(
             subscriberId: SubscriberId,
             eventIsCanary: Boolean,
             aggregateId: AggregateId,
-        ): BucketId {
+        ): EventBusBucketId {
             eventBusBucketRepository.fetch(aggregateId = aggregateId)?.let { bucket ->
 
                 if (bucket.isCanary != eventIsCanary) {
@@ -76,7 +76,7 @@ data class EventBusBucket(
             subscriberId: SubscriberId,
             eventIsCanary: Boolean,
             aggregateId: AggregateId,
-        ): BucketId {
+        ): EventBusBucketId {
             val buckets =
                 eventBusBucketRepository
                     .fetch(subscriberId = subscriberId)
@@ -99,7 +99,7 @@ data class EventBusBucket(
         }
     }
 
-    data class BucketId(
+    data class EventBusBucketId(
         private val value: UUID,
     ) : Identifier(value = value)
 }

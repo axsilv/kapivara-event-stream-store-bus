@@ -52,8 +52,12 @@ data class EventStreamAggregator(
                 )
 
                 subscribersId.forEach { subscriberId ->
+                    val bucketId = eventBusBucketRepository
+                        .fetch(subscriberId)
+                        .random()
+
                     eventBusBucketRepository.deliver(
-                        subscriberId,
+                        bucketId,
                         eventStreamAggregatorId,
                     )
                 }
