@@ -23,7 +23,7 @@ data class EventStreamAggregator(
     val createdAt: Instant,
 ) {
     companion object {
-        suspend fun collect(
+        suspend fun finishStream(
             eventStreamAggregatorRepository: EventStreamAggregatorRepository,
             eventAggregateRepository: EventAggregateRepository,
             eventIdentityRepository: EventIdentityRepository,

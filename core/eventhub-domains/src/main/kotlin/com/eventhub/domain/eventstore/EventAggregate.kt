@@ -4,7 +4,7 @@ import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventbus.EventBusBucketRepository
 import com.eventhub.domain.eventstore.EventIdentity.IdentityId
 import com.eventhub.domain.eventstore.EventPublisher.PublisherId
-import com.eventhub.domain.eventstore.EventStreamAggregator.Companion.collect
+import com.eventhub.domain.eventstore.EventStreamAggregator.Companion.finishStream
 import com.eventhub.domain.eventstore.EventStreamAggregator.EventStreamAggregatorId
 import com.eventhub.domain.eventstore.ports.EventAggregateRepository
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
@@ -41,7 +41,7 @@ data class EventAggregate(
         eventAggregateRepository.store(this)
 
         if (isFinal) {
-            collect(
+            finishStream(
                 eventStreamAggregatorRepository,
                 eventAggregateRepository,
                 eventIdentityRepository,
