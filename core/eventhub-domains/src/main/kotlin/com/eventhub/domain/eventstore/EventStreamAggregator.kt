@@ -9,7 +9,7 @@ import com.eventhub.domain.eventstore.ports.EventIdentityRepository
 import com.eventhub.domain.eventstore.ports.EventStreamAggregatorRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.util.UUID
@@ -29,40 +29,43 @@ data class EventStreamAggregator(
             eventIdentityRepository: EventIdentityRepository,
             eventStreamAggregatorId: EventStreamAggregatorId,
             eventBusBucketRepository: EventBusBucketRepository,
-        ) = supervisorScope {
-            try {
-                val aggregates = eventAggregateRepository.fetch(eventStreamAggregatorId)
-                val subscribersId =
-                    aggregates
-                        .map { it.identityId }
-                        .map {
-                            async { eventIdentityRepository.fetchSubscribersId(it) }
-                        }.awaitAll()
-                        .flatten()
-                val publishers = aggregates.map { it.publisherId }
+        ) = coroutineScope {
+            val aggregates = eventAggregateRepository.fetch(eventStreamAggregatorId)
+            val subscribersId =
+                aggregates
+                    .map { it.identityId }
+                    .map {
+                        async { eventIdentityRepository.fetchSubscribersId(it) }
+                    }.awaitAll()
+                    .flatten()
+            val publishers = aggregates.map { it.publisherId }
 
-                eventStreamAggregatorRepository.store(
-                    EventStreamAggregator(
-                        eventStreamAggregatorId,
-                        subscribersId,
-                        publishers,
-                        aggregates,
-                        Clock.System.now(),
-                    ),
-                )
+            eventStreamAggregatorRepository.store(
+                EventStreamAggregator(
+                    eventStreamAggregatorId,
+                    subscribersId,
+                    publishers,
+                    aggregates,
+                    Clock.System.now(),
+                ),
+            )
 
-                subscribersId.forEach { subscriberId ->
-                    val bucketId = eventBusBucketRepository
-                        .fetch(subscriberId)
-                        .random()
+            subscribersId.forEach { subscriberId ->
+                async {
+                    try {
+                        val bucketId =
+                            eventBusBucketRepository
+                                .fetch(subscriberId)
+                                .random()
 
-                    eventBusBucketRepository.deliver(
-                        bucketId,
-                        eventStreamAggregatorId,
-                    )
+                        eventBusBucketRepository.deliver(
+                            bucketId,
+                            eventStreamAggregatorId,
+                        )
+                    } catch (_: Exception) {
+                        // TODO - add log + metrics
+                    }
                 }
-            } catch (_: Exception) {
-                // TODO - add log + metrics
             }
         }
     }
