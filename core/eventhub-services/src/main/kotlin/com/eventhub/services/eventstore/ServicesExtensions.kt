@@ -1,9 +1,7 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
-import com.eventhub.domain.eventstore.Event.EventId
-import com.eventhub.domain.eventstore.EventStream
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.EventStreamAggregator
+import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
 import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toIdentityId
 import com.eventhub.domain.eventstore.toOwnerId
@@ -13,7 +11,7 @@ import com.eventhub.services.eventstore.EventQueryResult.EventDataQueryResult.Re
 
 fun AddEvent.toEvent(): Event =
     Event(
-        eventId = EventId(eventId),
+        id = EventId(eventId),
         metadata = metadata,
         occurredOn = occurredOn,
         message =
@@ -30,15 +28,15 @@ fun AddEvent.toEvent(): Event =
                     },
                 payload = data,
             ),
-        eventStreamId = EventStreamId(value = eventStreamId),
+        aggregateId = AggregateId(value = eventStreamId),
         shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = ownerId.toOwnerId(),
+        subscriberId = ownerId.toOwnerId(),
         identityId = this@toEvent.identityId.toIdentityId(),
     )
 
 fun Event.toEventQueryResult(): EventQueryResult =
     EventQueryResult(
-        eventId = eventId.toUUID(),
+        eventId = id.toUUID(),
         metadata = metadata,
         occurredOn = occurredOn,
         eventData =
@@ -55,13 +53,13 @@ fun Event.toEventQueryResult(): EventQueryResult =
                     },
                 data = message.payload,
             ),
-        eventStreamId = eventStreamId.toUUID(),
+        eventStreamId = aggregateId.toUUID(),
         shouldSendToEventBus = shouldSendToEventBus,
-        ownerId = ownerId.toUUID(),
+        ownerId = subscriberId.toUUID(),
     )
 
-fun EventStream.toEventStreamQueryResult() =
+fun EventStreamAggregator.toEventStreamQueryResult() =
     EventStreamQueryResult(
-        eventStreamId = eventStreamId.toUUID(),
-        events = events.map { it.toEventQueryResult() }.toList(),
+        eventStreamId = id.toUUID(),
+        events = stream.map { it.toEventQueryResult() }.toList(),
     )

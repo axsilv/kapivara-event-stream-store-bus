@@ -1,6 +1,5 @@
 package com.eventhub.spring.services.configurations
 
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.services.eventstore.EventQueryResult
 import com.eventhub.services.eventstore.GetEventService
 import org.springframework.stereotype.Service

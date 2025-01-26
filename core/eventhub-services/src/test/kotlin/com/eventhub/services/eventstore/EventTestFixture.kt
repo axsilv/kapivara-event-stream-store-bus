@@ -1,7 +1,6 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
 import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toOwnerId
@@ -19,7 +18,7 @@ object EventTestFixture {
 
     fun event(): Event =
         Event(
-            eventId = eventUuid.toEventId(),
+            id = eventUuid.toEventId(),
             metadata = mapOf(),
             occurredOn = occurredOn,
             message =
@@ -30,9 +29,9 @@ object EventTestFixture {
                     correlationIds = listOf(),
                     payload = Json.encodeToJsonElement(mapOf("test" to "true")),
                 ),
-            eventStreamId = EventStreamId(eventStreamUuid),
+            aggregateId = AggregateId(eventStreamUuid),
             shouldSendToEventBus = true,
-            ownerId = ownerId.toOwnerId(),
+            subscriberId = ownerId.toOwnerId(),
             identityId = this@EventTestFixture.identityId,
         )
 }

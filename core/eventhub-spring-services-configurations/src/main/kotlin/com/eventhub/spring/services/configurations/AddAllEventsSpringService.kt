@@ -1,8 +1,6 @@
 package com.eventhub.spring.services.configurations
 
-import com.eventhub.domain.eventbus.BucketRepository
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
-import com.eventhub.domain.eventstore.ports.EventStreamRepository
+import com.eventhub.domain.eventbus.EventBusBucketRepository
 import com.eventhub.services.eventstore.AddAllEventsService
 import com.eventhub.services.eventstore.AddEvent
 import org.springframework.stereotype.Service
@@ -13,12 +11,12 @@ class AddAllEventsSpringService(
     eventStoreRepository: EventStoreRepository,
     eventBusRepository: EventBusRepository,
     eventStreamRepository: EventStreamRepository,
-    bucketRepository: BucketRepository,
+    eventBusBucketRepository: EventBusBucketRepository,
 ) : AddAllEventsService(
         eventStoreRepository = eventStoreRepository,
         eventBusRepository = eventBusRepository,
         eventStreamRepository = eventStreamRepository,
-        bucketRepository = bucketRepository,
+        eventBusBucketRepository = eventBusBucketRepository,
     ) {
     @Transactional
     override suspend fun addAll(addEvents: List<AddEvent>) {

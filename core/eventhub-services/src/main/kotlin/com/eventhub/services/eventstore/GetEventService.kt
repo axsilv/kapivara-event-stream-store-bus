@@ -1,6 +1,5 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toOwnerId
 import java.util.UUID
@@ -16,6 +15,6 @@ open class GetEventService(
             .toEventId()
             .get(
                 eventStoreRepository = eventStoreRepository,
-                ownerId = ownerId.toOwnerId(),
+                subscriberId = ownerId.toOwnerId(),
             )?.toEventQueryResult()
 }

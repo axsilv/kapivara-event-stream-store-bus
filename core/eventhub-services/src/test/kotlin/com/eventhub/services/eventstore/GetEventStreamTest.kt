@@ -1,8 +1,7 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.EventStream
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
+import com.eventhub.domain.eventstore.EventStreamAggregator
+import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
 import com.eventhub.domain.eventstore.toEventStreamId
 import com.eventhub.services.eventstore.EventTestFixture.event
 import io.kotest.core.spec.style.BehaviorSpec
@@ -27,26 +26,26 @@ class GetEventStreamTest :
                                 eventStoreRepository = eventStoreRepository,
                             )
                         mockkStatic(UUID::toEventStreamId)
-                        mockkStatic(EventStreamId::toUUID)
+                        mockkStatic(AggregateId::toUUID)
                         val eventStreamUuid = mockk<UUID>()
-                        val eventStreamId = mockk<EventStreamId>()
+                        val aggregateId = mockk<AggregateId>()
 
-                        every { eventStreamUuid.toEventStreamId() } returns eventStreamId
+                        every { eventStreamUuid.toEventStreamId() } returns aggregateId
                         coEvery {
-                            eventStreamId.get(eventStoreRepository = any())
+                            aggregateId.get(eventStoreRepository = any())
                         } returns
-                            EventStream(
-                                eventStreamId = eventStreamId,
-                                events = listOf(event()),
+                            EventStreamAggregator(
+                                id = aggregateId,
+                                stream = listOf(event()),
                             )
-                        every { eventStreamId.toUUID() } returns eventStreamUuid
+                        every { aggregateId.toUUID() } returns eventStreamUuid
 
                         service.get(eventStreamId = eventStreamUuid)
 
                         verify { eventStreamUuid.toEventStreamId() }
-                        coVerify { eventStreamId.get(eventStoreRepository = eventStoreRepository) }
-                        verify { eventStreamId.toUUID() }
-                        confirmVerified(eventStreamId, eventStreamUuid)
+                        coVerify { aggregateId.get(eventStoreRepository = eventStoreRepository) }
+                        verify { aggregateId.toUUID() }
+                        confirmVerified(aggregateId, eventStreamUuid)
                     }
                 }
             }

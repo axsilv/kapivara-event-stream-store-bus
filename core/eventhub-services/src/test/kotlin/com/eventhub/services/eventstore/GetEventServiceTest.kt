@@ -1,8 +1,5 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
-import com.eventhub.domain.eventstore.Event.EventId
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toOwnerId
 import com.eventhub.services.eventstore.EventTestFixture.event
@@ -47,7 +44,7 @@ class GetEventServiceTest :
                         coVerify {
                             eventId.get(
                                 eventStoreRepository = eventStoreRepository,
-                                ownerId = ownerId,
+                                subscriberId = ownerId,
                             )
                         }
                         confirmVerified(eventStoreRepository, eventUuid, eventId)

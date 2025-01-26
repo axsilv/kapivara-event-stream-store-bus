@@ -1,11 +1,7 @@
 package com.eventhub.domain
 
-import java.util.UUID
-
-abstract class Identifier(
-    private val value: UUID,
+open class Identifier<T>(
+    private val value: T,
 ) {
-    fun toUUID() = value
-
     override fun toString() = value.toString()
 }

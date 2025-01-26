@@ -1,7 +1,5 @@
 package com.kapivara.eventhub.adapters.databases.r2dbc.postgresql
 
-import com.eventhub.domain.eventstore.ports.EventStore
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.INSERT_EVENT_STORE
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.SELECT_BY_EVENT_ID_AND_OWNER_ID
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Queries.SELECT_BY_EVENT_STREAM_ID
@@ -34,9 +32,9 @@ class R2dbcEventStoreRepository(
             .bind("alias", eventStore.alias)
             .bind("relatedIdentifiers", Json.encodeToString(eventStore.relatedIdentifiers))
             .bind("data", Json.encodeToString(eventStore.payload))
-            .bind("eventStreamId", eventStore.eventStreamId)
+            .bind("eventStreamId", eventStore.aggregateId)
             .bind("shouldSendToEventBus", eventStore.shouldSendToEventBus)
-            .bind("ownerId", eventStore.ownerId)
+            .bind("ownerId", eventStore.subscriberId)
             .bind("identityId", eventStore.identityId)
             .fetch()
             .awaitRowsUpdated()
@@ -73,9 +71,9 @@ class R2dbcEventStoreRepository(
             alias = row["alias", String::class.java]!!,
             relatedIdentifiers = rowToStringMap(row),
             payload = row["data", String::class.java]!!,
-            eventStreamId = row["eventStreamId", UUID::class.java]!!,
+            aggregateId = row["eventStreamId", UUID::class.java]!!,
             shouldSendToEventBus = row["shouldSendToEventBus", Boolean::class.java]!!,
-            ownerId = row["ownerId", UUID::class.java]!!,
+            subscriberId = row["ownerId", UUID::class.java]!!,
             identityId = row["identityId", UUID::class.java]!!,
         )
 

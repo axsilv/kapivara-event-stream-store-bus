@@ -1,7 +1,5 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.Event
-import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.coJustRun
 import io.mockk.coVerify
