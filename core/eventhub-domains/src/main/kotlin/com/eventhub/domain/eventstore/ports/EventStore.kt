@@ -1,9 +1,9 @@
 package com.eventhub.domain.eventstore.ports
 
 import com.eventhub.domain.eventstore.Event.EventId
-import com.eventhub.domain.eventstore.Event.IdentityId
-import com.eventhub.domain.eventstore.Event.OwnerId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Identity.IdentityId
+import com.eventhub.domain.eventstore.Owner.OwnerId
 import kotlinx.datetime.Instant
 
 data class EventStore(
@@ -13,10 +13,8 @@ data class EventStore(
     val owner: String,
     val type: String,
     val alias: String,
-    val relatedIdentifiers: Map<String, String>,
-    val data: String,
+    val payload: String,
     val eventStreamId: EventStreamId,
-    val shouldSendToEventBus: Boolean,
     val ownerId: OwnerId,
     val identityId: IdentityId,
 )

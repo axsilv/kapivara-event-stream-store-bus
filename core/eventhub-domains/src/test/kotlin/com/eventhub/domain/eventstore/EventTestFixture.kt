@@ -25,13 +25,13 @@ object EventTestFixture {
                     owner = "test_owner",
                     type = "test_type",
                     alias = "test_alias",
-                    relatedIdentifiers = listOf(),
-                    data = Json.encodeToString(mapOf("test" to "true")),
+                    correlationIds = listOf(),
+                    payload = Json.encodeToString(mapOf("test" to "true")),
                 ),
             eventStreamId = EventStreamId(eventStreamUuid),
             shouldSendToEventBus = shouldSendToEventBus,
             ownerId = ownerId.toOwnerId(),
-            identityId = identityId,
+            identityId = this@EventTestFixture.identityId,
         )
 
     fun eventStore() =
@@ -43,10 +43,10 @@ object EventTestFixture {
             type = "test_type",
             alias = "test_alias",
             relatedIdentifiers = mapOf(),
-            data = Json.encodeToJsonElement(mapOf("test" to "true")),
+            payload = Json.encodeToJsonElement(mapOf("test" to "true")),
             eventStreamId = eventStreamUuid,
             shouldSendToEventBus = true,
             ownerId = ownerId,
-            identityId = identityId,
+            identityId = this@EventTestFixture.identityId,
         )
 }

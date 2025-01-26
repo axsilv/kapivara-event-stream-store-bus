@@ -38,7 +38,7 @@ class R2dbcEventStoreRepositoryTest :
                         event1.type shouldBe eventStore.type
                         event1.alias shouldBe eventStore.alias
                         event1.relatedIdentifiers shouldBe eventStore.relatedIdentifiers
-                        event1.data shouldBe eventStore.data
+                        event1.payload shouldBe eventStore.data
                         event1.eventStreamId shouldBe eventStore.eventStreamId
                         event1.shouldSendToEventBus shouldBe eventStore.shouldSendToEventBus
                         event1.ownerId shouldBe eventStore.ownerId
@@ -52,7 +52,7 @@ class R2dbcEventStoreRepositoryTest :
                         event2.type shouldBe eventStore.type
                         event2.alias shouldBe eventStore.alias
                         event2.relatedIdentifiers shouldBe eventStore.relatedIdentifiers
-                        event2.data shouldBe eventStore.data
+                        event2.payload shouldBe eventStore.data
                         event2.eventStreamId shouldBe eventStore.eventStreamId
                         event2.shouldSendToEventBus shouldBe eventStore.shouldSendToEventBus
                         event2.ownerId shouldBe eventStore.ownerId

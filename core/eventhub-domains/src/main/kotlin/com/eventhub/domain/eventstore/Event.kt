@@ -4,10 +4,12 @@ import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventbus.Bucket.BucketId
 import com.eventhub.domain.eventbus.BucketRepository
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Identity.IdentityId
+import com.eventhub.domain.eventstore.Owner.OwnerId
 import com.eventhub.domain.eventstore.ports.EventStoreRepository
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
 import com.eventhub.domain.eventstore.ports.IdentityRepository
-import com.eventhub.domain.eventstore.ports.RelatedIdentifierRepository
+import com.eventhub.domain.eventstore.ports.CorrelationIdRepository
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -21,9 +23,11 @@ data class Event(
     val occurredOn: Instant,
     val message: Message,
     val eventStreamId: EventStreamId,
-    val shouldSendToEventBus: Boolean,
     val ownerId: OwnerId,
     val identityId: IdentityId,
+    val isCanary: Boolean,
+    val isTest: Boolean,
+    val position: Long
 ) {
     data class EventId(
         private val value: UUID,
@@ -38,68 +42,69 @@ data class Event(
             )?.toEvent()
     }
 
-    data class OwnerId(
-        private val value: UUID,
-    ) : Identifier(value = value)
-
-    data class IdentityId(
-        private val value: UUID,
-    ) : Identifier(value = value)
-
     suspend fun store(
         eventStoreRepository: EventStoreRepository,
         eventStreamRepository: EventStreamRepository,
         bucketRepository: BucketRepository,
         identityRepository: IdentityRepository,
-        relatedIdentifierRepository: RelatedIdentifierRepository,
+        correlationIdRepository: CorrelationIdRepository,
     ) {
         message.checkJson()
 
-        checkEventStreamOwnership(eventStreamRepository)
+        checkEventStreamOwnership(eventStreamRepository = eventStreamRepository)
 
-        checkEventStreamBucket(bucketRepository)
+        val bucketId = checkEventStreamBucket(bucketRepository = bucketRepository)
 
-        checkIdentity(identityRepository)
+        checkIdentity(identityRepository = identityRepository)
 
-        eventStoreRepository.store(this.toEventStore())
+        eventStoreRepository.store(eventStore = this.toEventStore())
 
-        storeRelatedIdentifiers(relatedIdentifierRepository) // trocar nomenclatura para correlation ids
+        storeCorrelationIds(correlationIdRepository = correlationIdRepository)
+
+        bucketRepository.deliver(
+            bucketId = bucketId,
+            eventId = eventId
+        )
     }
 
-    private suspend fun storeRelatedIdentifiers(relatedIdentifierRepository: RelatedIdentifierRepository) {
+    private suspend fun storeCorrelationIds(correlationIdRepository: CorrelationIdRepository) {
         message
-            .relatedIdentifiers
-            .map { identifier ->
+            .correlationIds
+            .map { correlationId ->
                 coroutineScope {
                     launch {
-                        relatedIdentifierRepository.store(identifier)
+                        correlationIdRepository.store(correlationId = correlationId)
                     }
                 }
             }.joinAll()
     }
 
     private suspend fun checkIdentity(identityRepository: IdentityRepository) {
-        if (identityRepository.exists(identityId).not()) {
+        if (identityRepository.exists(identityId = identityId).not()) {
             throw RuntimeException() // todo
         }
     }
 
     private suspend fun checkEventStreamBucket(bucketRepository: BucketRepository): BucketId {
-        bucketRepository.fetch(eventStreamId)?.let {
-            return it
+        bucketRepository.fetch(eventStreamId = eventStreamId)?.let { bucket ->
+            return bucket.id
         }
 
-        val bucketId =
+        return storeBucketForStream(bucketRepository)
+    }
+
+    private suspend fun storeBucketForStream(bucketRepository: BucketRepository): BucketId {
+        val bucket =
             bucketRepository
-                .fetch(ownerId)
+                .fetch(ownerId = ownerId)
                 .random()
 
         bucketRepository.store(
-            bucketId,
-            eventStreamId,
+            bucketId = bucket.id,
+            eventStreamId = eventStreamId
         )
 
-        return bucketId
+        return bucket.id
     }
 
     private suspend fun checkEventStreamOwnership(eventStreamRepository: EventStreamRepository) {
@@ -107,11 +112,11 @@ data class Event(
 
         if (eventStreamExists.not()) {
             eventStreamRepository.store(
-                eventStreamId,
-                ownerId,
+                eventStreamId = eventStreamId,
+                ownerId = ownerId,
             )
         }
     }
 
-    private fun Message.checkJson() = Json.parseToJsonElement(this.data)
+    private fun Message.checkJson() = Json.parseToJsonElement(this.payload)
 }

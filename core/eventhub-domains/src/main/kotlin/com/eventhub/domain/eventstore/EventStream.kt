@@ -7,6 +7,7 @@ import java.util.UUID
 
 data class EventStream(
     val eventStreamId: EventStreamId,
+    val ownerId: Event.OwnerId,
     val events: List<Event>,
 ) {
     data class EventStreamId(
@@ -21,6 +22,9 @@ data class EventStream(
                         .map { it.toEvent() },
             )
 
-        suspend fun exists(eventStreamRepository: EventStreamRepository) = eventStreamRepository.exists(eventStreamId = this)
+        suspend fun exists(eventStreamRepository: EventStreamRepository) =
+            eventStreamRepository.exists(eventStreamId = this)
+
+        suspend fun fetch
     }
 }

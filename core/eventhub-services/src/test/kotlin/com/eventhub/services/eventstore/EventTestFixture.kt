@@ -27,12 +27,12 @@ object EventTestFixture {
                     owner = "test_owner",
                     type = "test_type",
                     alias = "test_alias",
-                    relatedIdentifiers = listOf(),
-                    data = Json.encodeToJsonElement(mapOf("test" to "true")),
+                    correlationIds = listOf(),
+                    payload = Json.encodeToJsonElement(mapOf("test" to "true")),
                 ),
             eventStreamId = EventStreamId(eventStreamUuid),
             shouldSendToEventBus = true,
             ownerId = ownerId.toOwnerId(),
-            identityId = identityId,
+            identityId = this@EventTestFixture.identityId,
         )
 }

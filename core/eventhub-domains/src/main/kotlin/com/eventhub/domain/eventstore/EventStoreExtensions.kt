@@ -3,7 +3,8 @@ package com.eventhub.domain.eventstore
 import com.eventhub.domain.eventstore.Event.EventId
 import com.eventhub.domain.eventstore.Event.OwnerId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.domain.eventstore.Message.RelatedIdentifier.RelatedIdentifierId
+import com.eventhub.domain.eventstore.Identity.IdentityId
+import com.eventhub.domain.eventstore.Message.CorrelationId.RelatedIdentifierId
 import com.eventhub.domain.eventstore.ports.EventStore
 import java.util.UUID
 
@@ -17,14 +18,14 @@ fun EventStore.toEvent() =
                 owner = owner,
                 type = type,
                 alias = alias,
-                relatedIdentifiers =
+                correlationIds =
                     relatedIdentifiers.map { (key, value) ->
-                        Message.RelatedIdentifier(
+                        Message.CorrelationId(
                             owner = value,
                             relatedIdentifierId = key.toRelatedIdentifierId(),
                         )
                     },
-                data = data,
+                payload = payload,
             ),
         eventStreamId = eventStreamId.toEventStreamId(),
         shouldSendToEventBus = shouldSendToEventBus,
@@ -42,8 +43,8 @@ fun Event.toEventStore() =
         owner = message.owner,
         type = message.type,
         alias = message.alias,
-        relatedIdentifiers = message.relatedIdentifiers.associate { it.relatedIdentifierId.toString() to it.owner },
-        data = message.data,
+        relatedIdentifiers = message.correlationIds.associate { it.relatedIdentifierId.toString() to it.owner },
+        payload = message.payload,
         eventStreamId = eventStreamId.toEventStreamId(),
         shouldSendToEventBus = shouldSendToEventBus,
         ownerId = ownerId.toOwnerId(),
@@ -56,4 +57,4 @@ fun UUID.toEventStreamId(): EventStreamId = EventStreamId(value = this)
 
 fun UUID.toOwnerId() = OwnerId(value = this)
 
-fun UUID.toIdentityId() = Event.IdentityId(value = this)
+fun UUID.toIdentityId() = IdentityId(value = this)

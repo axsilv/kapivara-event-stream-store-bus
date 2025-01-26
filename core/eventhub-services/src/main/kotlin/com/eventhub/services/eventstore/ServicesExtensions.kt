@@ -21,19 +21,19 @@ fun AddEvent.toEvent(): Event =
                 owner = owner,
                 type = type,
                 alias = alias,
-                relatedIdentifiers =
+                correlationIds =
                     relatedIdentifiers.map { (key, value) ->
-                        Message.RelatedIdentifier(
+                        Message.CorrelationId(
                             owner = value,
                             relatedIdentifierId = key.toRelatedIdentifierId(),
                         )
                     },
-                data = data,
+                payload = data,
             ),
         eventStreamId = EventStreamId(value = eventStreamId),
         shouldSendToEventBus = shouldSendToEventBus,
         ownerId = ownerId.toOwnerId(),
-        identityId = identityId.toIdentityId(),
+        identityId = this@toEvent.identityId.toIdentityId(),
     )
 
 fun Event.toEventQueryResult(): EventQueryResult =
@@ -47,13 +47,13 @@ fun Event.toEventQueryResult(): EventQueryResult =
                 type = message.type,
                 alias = message.alias,
                 relatedIdentifiers =
-                    message.relatedIdentifiers.map { (key, value) ->
+                    message.correlationIds.map { (key, value) ->
                         RelatedIdentifierQueryResult(
                             owner = value,
                             relatedIdentifierId = key.toUUID(),
                         )
                     },
-                data = message.data,
+                data = message.payload,
             ),
         eventStreamId = eventStreamId.toUUID(),
         shouldSendToEventBus = shouldSendToEventBus,

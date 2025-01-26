@@ -33,7 +33,7 @@ class R2dbcEventStoreRepository(
             .bind("type", eventStore.type)
             .bind("alias", eventStore.alias)
             .bind("relatedIdentifiers", Json.encodeToString(eventStore.relatedIdentifiers))
-            .bind("data", Json.encodeToString(eventStore.data))
+            .bind("data", Json.encodeToString(eventStore.payload))
             .bind("eventStreamId", eventStore.eventStreamId)
             .bind("shouldSendToEventBus", eventStore.shouldSendToEventBus)
             .bind("ownerId", eventStore.ownerId)
@@ -72,7 +72,7 @@ class R2dbcEventStoreRepository(
             type = row["type", String::class.java]!!,
             alias = row["alias", String::class.java]!!,
             relatedIdentifiers = rowToStringMap(row),
-            data = row["data", String::class.java]!!,
+            payload = row["data", String::class.java]!!,
             eventStreamId = row["eventStreamId", UUID::class.java]!!,
             shouldSendToEventBus = row["shouldSendToEventBus", Boolean::class.java]!!,
             ownerId = row["ownerId", UUID::class.java]!!,
