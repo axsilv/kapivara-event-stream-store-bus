@@ -1,7 +1,7 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.EventStreamAggregator
-import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
+import com.eventhub.domain.eventstore.EventStream
+import com.eventhub.domain.eventstore.EventStream.AggregateId
 import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toIdentityId
 import com.eventhub.domain.eventstore.toOwnerId
@@ -58,7 +58,7 @@ fun Event.toEventQueryResult(): EventQueryResult =
         ownerId = subscriberId.toUUID(),
     )
 
-fun EventStreamAggregator.toEventStreamQueryResult() =
+fun EventStream.toEventStreamQueryResult() =
     EventStreamQueryResult(
         eventStreamId = id.toUUID(),
         events = stream.map { it.toEventQueryResult() }.toList(),

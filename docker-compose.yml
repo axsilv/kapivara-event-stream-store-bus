@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16
-    container_name: my_postgres
+    container_name: postgres
     environment:
       POSTGRES_USER: eventstore
       POSTGRES_PASSWORD: eventstore
@@ -16,6 +16,19 @@ services:
       timeout: 10s
       retries: 5
 
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: eventstore
+      MONGO_INITDB_ROOT_PASSWORD: eventstore
+    volumes:
+      - mongo-data:/data/db
+
 volumes:
   postgres_data:
+    driver: local
+  mongo-data:
     driver: local

@@ -1,12 +1,17 @@
 package com.eventhub.domain.eventstore.ports
 
-import com.eventhub.domain.eventstore.EventStreamAggregator
-import com.eventhub.domain.eventstore.EventStreamAggregator.EventStreamAggregatorId
+import com.eventhub.domain.eventstore.EventAggregate
+import com.eventhub.domain.eventstore.EventStream
+import com.eventhub.domain.eventstore.EventStream.EventStreamId
 
 interface EventStreamAggregatorRepository {
-    suspend fun collect(eventStreamAggregatorId: EventStreamAggregatorId)
+    suspend fun collect(eventStreamId: EventStreamId)
 
-    suspend fun fetchFinishedStreams(): List<EventStreamAggregatorId>
+    suspend fun fetchFinishedStreams(): List<EventStreamId>
 
-    suspend fun store(eventStreamAggregator: EventStreamAggregator)
+    suspend fun store(eventStream: EventStream)
+
+    suspend fun store(eventAggregate: EventAggregate)
+
+    suspend fun fetch(eventStreamId: EventStreamId): List<EventAggregate>
 }

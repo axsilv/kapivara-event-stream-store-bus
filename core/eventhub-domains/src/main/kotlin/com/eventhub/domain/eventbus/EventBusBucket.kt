@@ -1,105 +1,18 @@
 package com.eventhub.domain.eventbus
 
 import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventstore.EventStreamAggregator
-import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
+import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
+import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventSubscriber.SubscriberId
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import java.util.UUID
 
 data class EventBusBucket(
     val id: EventBusBucketId,
     val subscriberId: SubscriberId,
-    val streams: List<EventStreamAggregator>,
+    val streams: List<EventStream>,
 ) {
-    companion object {
-        suspend fun generate(
-            subscriberId: SubscriberId,
-            quantity: Long,
-            eventBusBucketRepository: EventBusBucketRepository,
-        ): List<EventBusBucketId> =
-            coroutineScope {
-                (0..quantity)
-                    .map {
-                        async {
-                            val bucketId = UUID.randomUUID().toBucketId()
-                            eventBusBucketRepository.store(
-                                bucketId = bucketId,
-                                ownerId = subscriberId,
-                            )
-                            bucketId
-                        }
-                    }.awaitAll()
-            }
-
-        suspend fun generateCanary(
-            subscriberId: SubscriberId,
-            eventBusBucketRepository: EventBusBucketRepository,
-        ): EventBusBucketId {
-            val bucketId = UUID.randomUUID().toBucketId()
-
-            eventBusBucketRepository.store(
-                bucketId = bucketId,
-                ownerId = subscriberId,
-            )
-
-            return bucketId
-        }
-
-        suspend fun checkEventStreamBucket(
-            eventBusBucketRepository: EventBusBucketRepository,
-            subscriberId: SubscriberId,
-            eventIsCanary: Boolean,
-            aggregateId: AggregateId,
-        ): EventBusBucketId {
-            eventBusBucketRepository.fetch(aggregateId = aggregateId)?.let { bucket ->
-
-                if (bucket.isCanary != eventIsCanary) {
-                    throw RuntimeException()
-                }
-
-                return bucket.id
-            }
-
-            return storeBucketForStream(
-                eventBusBucketRepository = eventBusBucketRepository,
-                subscriberId = subscriberId,
-                eventIsCanary = eventIsCanary,
-                aggregateId = aggregateId,
-            )
-        }
-
-        private suspend fun storeBucketForStream(
-            eventBusBucketRepository: EventBusBucketRepository,
-            subscriberId: SubscriberId,
-            eventIsCanary: Boolean,
-            aggregateId: AggregateId,
-        ): EventBusBucketId {
-            val buckets =
-                eventBusBucketRepository
-                    .fetch(subscriberId = subscriberId)
-
-            val bucket =
-                try {
-                    buckets
-                        .filter { it.isCanary == eventIsCanary }
-                        .random()
-                } catch (_: NoSuchElementException) {
-                    buckets.random()
-                }
-
-            eventBusBucketRepository.store(
-                bucketId = bucket.id,
-                aggregateId = aggregateId,
-            )
-
-            return bucket.id
-        }
-    }
+    suspend fun store(eventBusBucketRepository: EventBusBucketRepository) = eventBusBucketRepository.store(this)
 
     data class EventBusBucketId(
-        private val value: UUID,
-    ) : Identifier(value = value)
+        private val value: Long,
+    ) : Identifier<Long>(value = value)
 }

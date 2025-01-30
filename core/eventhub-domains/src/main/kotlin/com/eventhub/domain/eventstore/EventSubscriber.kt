@@ -2,6 +2,7 @@ package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventbus.EventBusBucket
+import com.eventhub.domain.eventstore.ports.EventSubscriberRepository
 
 data class EventSubscriber(
     val id: SubscriberId,
@@ -13,4 +14,6 @@ data class EventSubscriber(
     data class SubscriberId(
         private val value: Long,
     ) : Identifier<Long>(value = value)
+
+    suspend fun store(eventSubscriberRepository: EventSubscriberRepository) = eventSubscriberRepository.store(this)
 }

@@ -1,6 +1,6 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventbus.EventBusBucketRepository
+import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch

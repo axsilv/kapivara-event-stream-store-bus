@@ -1,6 +1,6 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
+import com.eventhub.domain.eventstore.EventStream.AggregateId
 import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toOwnerId

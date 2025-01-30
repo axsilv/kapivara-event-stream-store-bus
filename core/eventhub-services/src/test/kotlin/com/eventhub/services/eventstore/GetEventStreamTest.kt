@@ -1,7 +1,7 @@
 package com.eventhub.services.eventstore
 
-import com.eventhub.domain.eventstore.EventStreamAggregator
-import com.eventhub.domain.eventstore.EventStreamAggregator.AggregateId
+import com.eventhub.domain.eventstore.EventStream
+import com.eventhub.domain.eventstore.EventStream.AggregateId
 import com.eventhub.domain.eventstore.toEventStreamId
 import com.eventhub.services.eventstore.EventTestFixture.event
 import io.kotest.core.spec.style.BehaviorSpec
@@ -34,7 +34,7 @@ class GetEventStreamTest :
                         coEvery {
                             aggregateId.get(eventStoreRepository = any())
                         } returns
-                            EventStreamAggregator(
+                            EventStream(
                                 id = aggregateId,
                                 stream = listOf(event()),
                             )

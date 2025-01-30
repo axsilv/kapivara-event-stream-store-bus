@@ -1,6 +1,6 @@
 package com.eventhub.spring.services.configurations
 
-import com.eventhub.domain.eventbus.EventBusBucketRepository
+import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
 import com.eventhub.services.eventstore.AddAllEventsService
 import com.eventhub.services.eventstore.AddEvent
 import org.springframework.stereotype.Service
