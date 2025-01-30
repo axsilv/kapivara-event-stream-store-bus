@@ -6,10 +6,12 @@ Kapivara Event Streaming Aggregation is a service developed as part of personal 
 
 An Event Stream Store Bus is a combination of two concepts: an Event Bus and an Event Store. Here's a brief overview of each:
 
-Event Bus
+**Event Bus**
+
 An Event Bus is a mechanism that dispatches events to subscribed event handlers. It acts as a central hub where events are published and then routed to the appropriate consumers or listeners1. This allows for decoupling of event producers and consumers, promoting a more modular and scalable architecture.
 
-Event Store
+**Event Store**
+
 An Event Store is a storage system that persists events. It records events as they occur and allows for replaying or querying past events based on certain criteria, such as an aggregate identifier1. This is particularly useful for event sourcing, where the state of an application is determined by the sequence of events that have occurred.
 
 Combining Both

@@ -15,4 +15,11 @@ interface EventBusDeliveryControlRepository {
         eventBusBucketId: EventBusBucketId,
         hideUntil: Instant?,
     )
+
+    suspend fun commit(
+        eventStreamId: EventStreamId,
+        eventBusBucketId: EventBusBucketId,
+    )
+
+    suspend fun fetchVisible(eventBusBucketId: EventBusBucketId)
 }
