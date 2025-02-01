@@ -61,5 +61,5 @@ fun Event.toEventQueryResult(): EventQueryResult =
 fun EventStream.toEventStreamQueryResult() =
     EventStreamQueryResult(
         eventStreamId = id.toUUID(),
-        events = stream.map { it.toEventQueryResult() }.toList(),
+        events = eventMessages.map { it.toEventQueryResult() }.toList(),
     )

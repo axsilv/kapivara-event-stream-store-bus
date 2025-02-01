@@ -12,7 +12,7 @@ data class EventSubscriber(
     val eventBusBuckets: List<EventBusBucket>,
 ) {
     data class SubscriberId(
-        private val value: Long,
+        val value: Long,
     ) : Identifier<Long>(value = value)
 
     suspend fun store(eventSubscriberRepository: EventSubscriberRepository) = eventSubscriberRepository.store(this)

@@ -36,7 +36,7 @@ class GetEventStreamTest :
                         } returns
                             EventStream(
                                 id = aggregateId,
-                                stream = listOf(event()),
+                                eventMessages = listOf(event()),
                             )
                         every { aggregateId.toUUID() } returns eventStreamUuid
 

@@ -11,7 +11,7 @@ data class EventIdentity(
     val metadata: Map<String, String>,
 ) {
     data class IdentityId(
-        private val value: Long,
+        val value: Long,
     ) : Identifier<Long>(value = value)
 
     suspend fun store(eventIdentityRepository: EventIdentityRepository) {

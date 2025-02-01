@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.plugin.spring)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.serializationp)
 }
 
 group = "com.kapivara.eventhub"
@@ -33,6 +34,7 @@ subprojects {
         apply {
             plugin("org.jetbrains.kotlin.jvm")
             plugin("org.jmailen.kotlinter")
+            plugin("org.jetbrains.kotlin.plugin.serialization")
         }
 
         dependencies {

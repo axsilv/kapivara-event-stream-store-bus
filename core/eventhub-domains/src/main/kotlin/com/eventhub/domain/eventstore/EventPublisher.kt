@@ -8,7 +8,7 @@ data class EventPublisher(
     val publisherName: String,
 ) {
     data class PublisherId(
-        private val value: Long,
+        val value: Long,
     ) : Identifier<Long>(value = value)
 
     suspend fun store(eventPublisherRepository: EventPublisherRepository) {

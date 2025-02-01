@@ -8,12 +8,12 @@ import com.eventhub.domain.eventstore.EventPublisher.PublisherId
 import com.eventhub.domain.eventstore.EventStream.Companion.deliverStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
-import com.eventhub.domain.eventstore.ports.EventStreamAggregatorRepository
+import com.eventhub.domain.eventstore.ports.EventStreamRepository
 import kotlinx.datetime.Instant
 import java.util.UUID
 
-data class EventAggregate(
-    val id: EventAggregateId,
+data class EventMessage(
+    val id: EventMessageId,
     val identityId: IdentityId,
     val publisherId: PublisherId,
     val eventStreamId: EventStreamId,
@@ -22,12 +22,12 @@ data class EventAggregate(
     val isFinal: Boolean,
     val occurredOn: Instant,
 ) {
-    data class EventAggregateId(
-        private val value: UUID,
+    data class EventMessageId(
+        val value: UUID,
     ) : Identifier<UUID>(value)
 
     suspend fun store(
-        eventStreamAggregatorRepository: EventStreamAggregatorRepository,
+        eventStreamRepository: EventStreamRepository,
         eventIdentityRepository: EventIdentityRepository,
         eventBusBucketRepository: EventBusBucketRepository,
         eventBusDeliveryControlRepository: EventBusDeliveryControlRepository,
@@ -38,10 +38,10 @@ data class EventAggregate(
             }
         }
 
-        eventStreamAggregatorRepository.store(this)
+        eventStreamRepository.store(this)
 
         deliverStream(
-            eventStreamAggregatorRepository,
+            eventStreamRepository,
             eventIdentityRepository,
             eventStreamId,
             eventBusBucketRepository,
