@@ -24,7 +24,10 @@ class R2dbcEventStreamRepositoryTes :
                             id = eventStreamId,
                             eventMessages = emptyList(),
                             streamExternalReference = fromString("18eb47f6-a73b-4f05-8657-96c01feaf3ab"),
-                            streamExternalReferenceHash = "18eb47f6-a73b-4f05-8657-96c01feaf3ab".hashCode().toLong(),
+                            streamExternalReferenceHash =
+                                "18eb47f6-a73b-4f05-8657-96c01feaf3ab"
+                                    .hashCode()
+                                    .toLong(),
                             createdAt = Clock.System.now(),
                         )
                     val messages =
@@ -44,7 +47,7 @@ class R2dbcEventStreamRepositoryTes :
 
                     repository.store(eventStream)
 
-                    messages.forEach {
+                    messages.map {
                         repository.store(it)
                     }
 

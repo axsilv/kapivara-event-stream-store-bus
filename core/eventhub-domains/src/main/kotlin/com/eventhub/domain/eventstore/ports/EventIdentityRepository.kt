@@ -11,4 +11,9 @@ interface EventIdentityRepository {
     suspend fun fetchPublisherId(identityId: IdentityId): PublisherId?
 
     suspend fun fetchSubscribersId(identityId: IdentityId): List<SubscriberId>
+
+    suspend fun appendSubscriberId(
+        eventIdentity: EventIdentity,
+        subscriberId: SubscriberId,
+    )
 }

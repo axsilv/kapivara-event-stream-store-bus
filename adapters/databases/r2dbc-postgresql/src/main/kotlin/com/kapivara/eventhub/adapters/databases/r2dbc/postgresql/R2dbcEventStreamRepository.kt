@@ -7,6 +7,8 @@ import com.eventhub.domain.eventstore.EventStream.Companion.toEventStreamId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
 import com.eventhub.domain.eventstore.Publisher.PublisherId
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.serialization.json.Json
@@ -26,57 +28,64 @@ import java.util.UUID.fromString
 class R2dbcEventStreamRepository(
     private val db: DatabaseClient,
 ) : EventStreamRepository {
+    companion object {
+        private val mutex: Mutex = Mutex()
+    }
+
     @Transactional(rollbackFor = [Throwable::class])
     override suspend fun store(eventMessage: EventMessage) {
-        db
-            .sql("SELECT messages FROM event_streams WHERE id = :id FOR UPDATE")
-            .bind("id", eventMessage.eventStreamId.value)
-            .map { row ->
-                row["messages", String::class.java] ?: "[]"
-            }.awaitOne()
-            .also { currentStreamJson ->
-                val currentStream: List<Map<String, String>> = Json.decodeFromString(currentStreamJson)
-                val newStream = currentStream + eventMessage.toMap()
-                val newStreamJson = Json.encodeToString(newStream)
-
+        mutex.withLock(eventMessage.eventStreamId.value) {
+            val currentStreamJson =
                 db
-                    .sql(
-                        """
+                    .sql("SELECT messages FROM event_streams WHERE id = :id FOR UPDATE")
+                    .bind("id", eventMessage.eventStreamId.value)
+                    .map { row ->
+                        row["messages", String::class.java] ?: "[]"
+                    }.awaitOne()
+            val currentStream: List<Map<String, String>> = Json.decodeFromString(currentStreamJson)
+            val newStream = currentStream + eventMessage.toMap()
+            val newStreamJson = Json.encodeToString(newStream)
+
+            db
+                .sql(
+                    """
                     UPDATE event_streams 
                     SET messages = CAST(:newStream AS JSONB)
                     WHERE id = CAST(:id AS UUID)
                 """,
-                    ).bind("newStream", newStreamJson)
-                    .bind("id", eventMessage.eventStreamId.value)
-                    .fetch()
-                    .awaitRowsUpdated()
-            }
+                ).bind("newStream", newStreamJson)
+                .bind("id", eventMessage.eventStreamId.value)
+                .fetch()
+                .awaitRowsUpdated()
+        }
     }
 
     @Transactional(rollbackFor = [Throwable::class])
     override suspend fun store(eventStream: EventStream) {
-        val messages =
-            eventStream
-                .eventMessages
-                .map { it.toMap() }
-                .toList()
-        val streamJson = if (messages.isEmpty()) JsonArray(emptyList()) else Json.encodeToJsonElement(messages)
+        mutex.withLock(eventStream.id.value) {
+            val messages =
+                eventStream
+                    .eventMessages
+                    .map { it.toMap() }
+                    .toList()
+            val streamJson = if (messages.isEmpty()) JsonArray(emptyList()) else Json.encodeToJsonElement(messages)
 
-        db
-            .sql(
-                """
+            db
+                .sql(
+                    """
             INSERT INTO event_streams (
                 id, messages, stream_external_reference, stream_external_reference_hash, created_at
             ) VALUES (
                 :id, CAST(:messages AS JSONB), :streamExternalReference, :streamExternalReferenceHash, :createdAt
             )
         """,
-            ).bind("id", eventStream.id.value)
-            .bind("messages", streamJson.toString())
-            .bind("streamExternalReference", eventStream.streamExternalReference)
-            .bind("streamExternalReferenceHash", eventStream.streamExternalReferenceHash.toInt())
-            .bind("createdAt", eventStream.createdAt.toJavaInstant())
-            .await()
+                ).bind("id", eventStream.id.value)
+                .bind("messages", streamJson.toString())
+                .bind("streamExternalReference", eventStream.streamExternalReference)
+                .bind("streamExternalReferenceHash", eventStream.streamExternalReferenceHash.toInt())
+                .bind("createdAt", eventStream.createdAt.toJavaInstant())
+                .await()
+        }
     }
 
     override suspend fun fetch(eventStreamId: EventStreamId): EventStream? =

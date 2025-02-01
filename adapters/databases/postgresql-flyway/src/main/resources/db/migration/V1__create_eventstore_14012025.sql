@@ -8,10 +8,15 @@ CREATE TABLE event_streams (
     created_at TIMESTAMPTZ NOT NULL
 );
 
-CREATE TABLE event_identities (
+CREATE TABLE identities (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     publisher_id UUID NOT NULL,
     subscribers_id JSONB NOT NULL,
     metadata JSONB NOT NULL
+);
+
+CREATE TABLE mutexes (
+    lock VARCHAR(255) PRIMARY KEY,
+    expires_at TIMESTAMPTZ NOT NULL
 );
