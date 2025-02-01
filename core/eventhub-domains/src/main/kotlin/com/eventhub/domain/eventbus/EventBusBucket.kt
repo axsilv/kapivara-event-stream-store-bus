@@ -4,7 +4,7 @@ import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
 import com.eventhub.domain.eventbus.ports.EventBusDeliveryControlRepository
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.domain.eventstore.EventSubscriber.SubscriberId
+import com.eventhub.domain.eventstore.Subscriber.SubscriberId
 
 data class EventBusBucket(
     val id: EventBusBucketId,

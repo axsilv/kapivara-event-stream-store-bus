@@ -3,7 +3,7 @@ package com.eventhub.domain.eventstore
 import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventstore.ports.EventPublisherRepository
 
-data class EventPublisher(
+data class Publisher(
     val id: PublisherId,
     val publisherName: String,
 ) {

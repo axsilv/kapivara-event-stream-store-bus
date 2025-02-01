@@ -2,9 +2,9 @@ package com.kapivara.eventhub.adapters.databases.r2dbc.postgresql
 
 import com.eventhub.domain.eventstore.EventIdentity
 import com.eventhub.domain.eventstore.EventMessage
-import com.eventhub.domain.eventstore.EventPublisher
 import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Publisher
 import com.kapivara.eventhub.adapters.databases.r2dbc.postgresql.Config.databaseClient
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -32,7 +32,7 @@ class R2dbcEventStreamRepositoryTes :
                             EventMessage(
                                 id = EventMessage.EventMessageId(randomUUID()),
                                 identityId = EventIdentity.IdentityId(1L),
-                                publisherId = EventPublisher.PublisherId(2L),
+                                publisherId = Publisher.PublisherId(2L),
                                 eventStreamId = eventStreamId,
                                 payload = "payload",
                                 position = 1L,

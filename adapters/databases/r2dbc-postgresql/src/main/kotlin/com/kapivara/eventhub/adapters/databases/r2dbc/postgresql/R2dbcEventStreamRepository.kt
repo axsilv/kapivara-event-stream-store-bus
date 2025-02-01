@@ -2,13 +2,11 @@ package com.kapivara.eventhub.adapters.databases.r2dbc.postgresql
 
 import com.eventhub.domain.eventstore.EventIdentity.IdentityId
 import com.eventhub.domain.eventstore.EventMessage
-import com.eventhub.domain.eventstore.EventPublisher.PublisherId
 import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.Companion.toEventStreamId
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Publisher.PublisherId
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
-import java.util.UUID
-import java.util.UUID.fromString
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.serialization.json.Json
@@ -21,6 +19,8 @@ import org.springframework.r2dbc.core.awaitRowsUpdated
 import org.springframework.r2dbc.core.awaitSingleOrNull
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
+import java.util.UUID.fromString
 
 @Repository
 class R2dbcEventStreamRepository(

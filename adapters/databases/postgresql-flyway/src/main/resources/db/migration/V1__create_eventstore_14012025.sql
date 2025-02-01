@@ -7,3 +7,11 @@ CREATE TABLE event_streams (
     stream_external_reference_hash BIGINT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL
 );
+
+CREATE TABLE event_identities (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    publisher_id UUID NOT NULL,
+    subscribers_id JSONB NOT NULL,
+    metadata JSONB NOT NULL
+);

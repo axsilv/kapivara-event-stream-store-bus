@@ -1,7 +1,7 @@
 package com.eventhub.domain.eventstore.ports
 
-import com.eventhub.domain.eventstore.EventSubscriber
+import com.eventhub.domain.eventstore.Subscriber
 
 fun interface EventSubscriberRepository {
-    suspend fun store(eventSubscriber: EventSubscriber)
+    suspend fun store(subscriber: Subscriber)
 }

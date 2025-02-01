@@ -1,13 +1,15 @@
 package com.eventhub.domain.eventstore
 
 import com.eventhub.domain.Identifier
+import com.eventhub.domain.eventstore.Publisher.PublisherId
+import com.eventhub.domain.eventstore.Subscriber.SubscriberId
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
 
 data class EventIdentity(
     val id: IdentityId,
     val name: String,
-    val eventPublisher: EventPublisher,
-    val eventSubscribers: List<EventSubscriber>,
+    val publisherId: PublisherId,
+    val eventSubscribers: List<SubscriberId>,
     val metadata: Map<String, String>,
 ) {
     data class IdentityId(
