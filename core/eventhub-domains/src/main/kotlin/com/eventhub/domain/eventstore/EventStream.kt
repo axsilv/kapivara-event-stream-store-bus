@@ -6,23 +6,21 @@ import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
 import com.eventhub.domain.eventbus.ports.EventBusDeliveryControlRepository
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import java.util.UUID
 import kotlin.collections.flatten
 
 data class EventStream(
-    val id: EventStreamId,
-    val eventMessages: List<EventMessage>,
-    val streamExternalReference: UUID,
-    val streamExternalReferenceHash: Long,
-    val createdAt: Instant,
+    val eventMessages: Set<EventMessage>,
 ) {
     companion object {
+        private val log = KotlinLogging.logger { }
+
         suspend fun deliverStream(
             eventStreamRepository: EventStreamRepository,
             eventIdentityRepository: EventIdentityRepository,
@@ -48,8 +46,11 @@ data class EventStream(
                             )
                         }
                     }?.joinAll()
-            } catch (_: Exception) {
-                // TODO - add log + metrics
+            } catch (e: Exception) {
+                log.error { "event stream error ${e.localizedMessage}" }
+
+                // TODO - add metrics
+                throw e
             }
         }
 

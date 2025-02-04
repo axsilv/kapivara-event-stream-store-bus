@@ -11,10 +11,8 @@ kotest = "5.9.1"
 mockk = "1.13.14"
 kotlinter = "5.0.1"
 serialization = "1.8.0-RC"
-r2dbc-postgresql = "1.0.7.RELEASE"
-r2dbc-pool = "1.0.2.RELEASE"
-flyway = "11.1.1"
 serializationp = "2.1.20-Beta1"
+kotlin-logging = "7.0.3"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -22,7 +20,6 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot"}
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management"}
 plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "plugin-spring"}
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter"}
-flyway = { id = "org.flywaydb.flyway", version.ref = "flyway"}
 serializationp = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationp"}
 
 [libraries]
@@ -30,7 +27,6 @@ spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies"
 spring-boot = { module = "org.springframework.boot:spring-boot", version.ref = "spring-boot"}
 spring-boot-autoconfigure = { module = "org.springframework.boot:spring-boot-autoconfigure", version.ref = "spring-boot"}
 spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot"}
-spring-boot-starter-log4j2 = { module = "org.springframework.boot:spring-boot-starter-log4j2", version.ref = "spring-boot"}
 spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot"}
 spring-boot-data-r2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc", version.ref = "spring-boot"}
 
@@ -40,6 +36,8 @@ kotlinx-coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime-jvm", version.ref = "kotlinx-datetime"}
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable"}
 
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging"}
+
 serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
 
@@ -48,8 +46,3 @@ kotest-assertions = { module = "io.kotest:kotest-assertions-core-jvm", version.r
 kotest-property = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest"}
 
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk"}
-
-r2dbc-postgresql = { module = "org.postgresql:r2dbc-postgresql", version.ref = "r2dbc-postgresql"}
-r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool"}
-
-flyway = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }

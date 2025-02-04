@@ -41,9 +41,10 @@ subprojects {
             implementation(rootProject.libs.kotlinx.coroutines)
             implementation(rootProject.libs.kotlinx.datetime)
             implementation(rootProject.libs.kotlinx.collections.immutable)
-
+            implementation(rootProject.libs.kotlinx.coroutines.reactor)
             implementation(rootProject.libs.serialization.json)
             implementation(rootProject.libs.serialization.core)
+            implementation(rootProject.libs.kotlin.logging)
 
             testImplementation(rootProject.libs.kotlinx.coroutines.test)
             testImplementation(rootProject.libs.kotest.junit5)

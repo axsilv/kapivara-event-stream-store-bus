@@ -17,8 +17,7 @@ include(
     "core:eventhub-domains",
     "core:eventhub-services",
     "core:eventhub-spring-services-configurations",
-    "adapters:databases:r2dbc-postgresql",
+    "adapters:databases:file-database",
     "adapters:web:eventstore:commands:spring:router",
     "adapters:web:eventstore:queries:spring:router",
-    "adapters:databases:postgresql-flyway"
 )
