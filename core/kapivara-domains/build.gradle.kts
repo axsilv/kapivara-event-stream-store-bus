@@ -1,0 +1,1 @@
+group = "com.kapivara.domain"

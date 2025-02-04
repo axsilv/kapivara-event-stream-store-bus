@@ -14,10 +14,9 @@ include(
     "deployments:spring:event-bus-commands",
     "deployments:spring:event-bus-queries",
     "deployments:spring:event-bus-webhooks",
-    "core:eventhub-domains",
-    "core:eventhub-business",
-    "adapters:spring-services",
-    "adapters:databases:spring-file-database",
+    "core:kapivara-domains",
+    "core:kapivara-business",
+    "adapters:databases:file-database",
     "adapters:web:eventstore:commands:spring:router",
     "adapters:web:eventstore:queries:spring:router",
 )
