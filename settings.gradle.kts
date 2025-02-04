@@ -15,7 +15,7 @@ include(
     "deployments:spring:event-bus-queries",
     "deployments:spring:event-bus-webhooks",
     "core:eventhub-domains",
-    "core:eventhub-services",
+    "core:eventhub-business",
     "core:eventhub-spring-services-configurations",
     "adapters:databases:file-database",
     "adapters:web:eventstore:commands:spring:router",

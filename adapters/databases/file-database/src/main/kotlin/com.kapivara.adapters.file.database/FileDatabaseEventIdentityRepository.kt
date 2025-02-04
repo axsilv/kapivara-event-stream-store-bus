@@ -4,7 +4,9 @@ import com.eventhub.domain.eventstore.EventIdentity
 import com.eventhub.domain.eventstore.Publisher
 import com.eventhub.domain.eventstore.Subscriber
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
+import org.springframework.stereotype.Service
 
+@Service
 class FileDatabaseEventIdentityRepository : EventIdentityRepository {
     override suspend fun store(eventIdentity: EventIdentity) {
         TODO("Not yet implemented")
