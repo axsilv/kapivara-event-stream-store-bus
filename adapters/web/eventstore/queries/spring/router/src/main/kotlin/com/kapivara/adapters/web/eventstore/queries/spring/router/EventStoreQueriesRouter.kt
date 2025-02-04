@@ -1,4 +1,4 @@
-package com.eventstore.queries.router
+package com.kapivara.adapters.web.eventstore.queries.spring.router
 
 import org.springframework.context.annotation.Bean
 import org.springframework.web.reactive.function.server.RouterFunction

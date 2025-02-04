@@ -1,4 +1,4 @@
-package com.eventstore.queries.router
+package com.kapivara.adapters.web.eventstore.queries.spring.router
 
 import com.eventhub.spring.services.configurations.GetEventStreamSpringService
 import org.springframework.web.reactive.function.server.ServerRequest

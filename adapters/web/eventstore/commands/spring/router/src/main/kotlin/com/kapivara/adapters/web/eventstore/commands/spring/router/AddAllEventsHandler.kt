@@ -1,4 +1,4 @@
-package com.eventstore.commands.router
+package com.kapivara.adapters.web.eventstore.commands.spring.router
 
 import com.eventhub.services.eventstore.AddEvent
 import com.eventhub.spring.services.configurations.AddAllEventsSpringService
