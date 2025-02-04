@@ -2,7 +2,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
 
-rootProject.name = "kapivara-eventhub"
+rootProject.name = "kapivara-event-stream-store-bus"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -16,8 +16,8 @@ include(
     "deployments:spring:event-bus-webhooks",
     "core:eventhub-domains",
     "core:eventhub-business",
-    "core:eventhub-spring-services-configurations",
-    "adapters:databases:file-database",
+    "adapters:spring-services",
+    "adapters:databases:spring-file-database",
     "adapters:web:eventstore:commands:spring:router",
     "adapters:web:eventstore:queries:spring:router",
 )

@@ -5,11 +5,11 @@ import com.eventhub.domain.eventstore.Publisher.PublisherId
 import com.eventhub.domain.eventstore.Subscriber.SubscriberId
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
 
-data class EventIdentity(
+data class Identity(
     val id: IdentityId,
     val name: String,
     val publisherId: PublisherId,
-    val eventSubscribers: List<SubscriberId>,
+    val eventSubscribers: Set<SubscriberId>,
     val metadata: Map<String, String>,
 ) {
     data class IdentityId(

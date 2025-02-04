@@ -1,20 +1,18 @@
-package com.kapivara.adapters.file.database
+package com.kapivara.adapters.spring.file.database
 
-import com.eventhub.domain.eventstore.EventIdentity.IdentityId
 import com.eventhub.domain.eventstore.EventMessage
 import com.eventhub.domain.eventstore.EventMessage.EventMessageId
 import com.eventhub.domain.eventstore.EventStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Identity.IdentityId
 import com.eventhub.domain.eventstore.Publisher.PublisherId
 import com.eventhub.domain.eventstore.ports.EventStreamRepository
-import com.kapivara.adapters.file.database.FileDatabaseVariables.streamPath
+import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.streamPath
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
-import org.springframework.stereotype.Service
 import java.io.File
 import java.util.UUID
 
-@Service
 class FileDatabaseEventStreamRepository(
     private val database: FileDatabase,
 ) : EventStreamRepository {

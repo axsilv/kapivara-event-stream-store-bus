@@ -3,9 +3,9 @@ package com.eventhub.domain.eventstore
 import com.eventhub.domain.Identifier
 import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
 import com.eventhub.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.eventhub.domain.eventstore.EventIdentity.IdentityId
 import com.eventhub.domain.eventstore.EventStream.Companion.deliverStream
 import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.eventhub.domain.eventstore.Identity.IdentityId
 import com.eventhub.domain.eventstore.Publisher.PublisherId
 import com.eventhub.domain.eventstore.ports.EventIdentityRepository
 import com.eventhub.domain.eventstore.ports.EventStreamRepository

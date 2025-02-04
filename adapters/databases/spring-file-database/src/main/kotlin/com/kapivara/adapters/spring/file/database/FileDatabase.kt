@@ -1,9 +1,8 @@
-package com.kapivara.adapters.file.database
+package com.kapivara.adapters.spring.file.database
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.springframework.stereotype.Service
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -13,7 +12,6 @@ import java.nio.channels.FileLock
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-@Service
 class FileDatabase {
     companion object {
         private val log = KotlinLogging.logger { }
@@ -67,5 +65,17 @@ class FileDatabase {
             val compressedContent = file.readBytes()
 
             decompressContent(compressedContent)
+        }
+
+    suspend fun readAllFilesAsync(filePath: String): Set<String> =
+        withContext(Dispatchers.IO) {
+            val folder = File(filePath)
+            folder
+                .listFiles()
+                .toList()
+                .map { file ->
+                    val compressedContent = file.readBytes()
+                    decompressContent(compressedContent)
+                }.toSet()
         }
 }
