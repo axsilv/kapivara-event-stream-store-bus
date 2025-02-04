@@ -1,4 +1,4 @@
-package com.kapivara.adapters.spring.file.database
+package com.kapivara.adapters.databases.filedatabase
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers

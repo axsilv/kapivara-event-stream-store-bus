@@ -1,8 +1,8 @@
-package com.kapivara.adapters.spring.file.database
+package com.kapivara.adapters.databases.filedatabase
 
 import com.eventhub.domain.eventstore.Publisher
 import com.eventhub.domain.eventstore.ports.EventPublisherRepository
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.publishersPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.publishersPath
 import kotlinx.serialization.json.Json
 
 class FileDatabaseEventPublisherRepository(

@@ -1,12 +1,12 @@
-package com.kapivara.adapters.spring.file.database
+package com.kapivara.adapters.databases.filedatabase
 
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.bucketsPath
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.dataPath
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.hidePath
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.identitiesPath
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.publishersPath
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.streamPath
-import com.kapivara.adapters.spring.file.database.FileDatabaseVariables.subscribersPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.bucketsPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.dataPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.hidePath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.identitiesPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.publishersPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.streamPath
+import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.subscribersPath
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.File
 import java.nio.file.Files

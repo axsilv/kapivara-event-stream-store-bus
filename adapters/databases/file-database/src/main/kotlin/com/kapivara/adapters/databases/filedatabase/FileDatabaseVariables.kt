@@ -1,4 +1,4 @@
-package com.kapivara.adapters.spring.file.database
+package com.kapivara.adapters.databases.filedatabase
 
 object FileDatabaseVariables {
     fun dataPath(): String = System.getenv("FILE_PATH") ?: "${System.getProperty("user.home")}/kapivara/data"
