@@ -16,7 +16,7 @@ include(
     "deployments:spring:event-bus-webhooks",
     "core:kapivara-domains",
     "core:kapivara-business",
-    "adapters:databases:file-database",
+    "adapters:database",
     "adapters:web:eventstore:commands:spring:router",
     "adapters:web:eventstore:queries:spring:router",
 )
