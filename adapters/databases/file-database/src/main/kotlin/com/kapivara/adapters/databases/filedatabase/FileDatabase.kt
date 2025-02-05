@@ -9,8 +9,13 @@ import java.io.File
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.nio.channels.FileLock
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
+import kotlin.io.path.Path
 
 class FileDatabase {
     companion object {
@@ -35,27 +40,29 @@ class FileDatabase {
     suspend fun writeFileAsync(
         filePath: String,
         content: String,
-    ) = withContext(Dispatchers.IO) {
-        val file = File(filePath)
-
-        if (file.exists().not()) {
-            file.createNewFile()
-
+    ) {
+        withContext(Dispatchers.IO) {
             val compressedContent = compressContent(content)
 
-            RandomAccessFile(file, "rw").use { raf ->
-                val channel: FileChannel = raf.channel
+            val path: Path = File(filePath).toPath()
 
-                val lock: FileLock = channel.lock()
-                try {
-                    raf.write(compressedContent)
-                    log.info { "Compressed file written successfully: $filePath" }
-                } finally {
-                    lock.release()
-                    log.info { "File lock released" }
-                }
-            }
+            Files.write(
+                path,
+                compressedContent,
+                StandardOpenOption.CREATE_NEW // Ensures atomic creation
+            )
         }
+    }
+
+    suspend fun lock(key: String) {
+        writeFileAsync(
+            filePath = "/mutex/$key.txt", // todo
+            content = ""
+        )
+    }
+
+    suspend fun unlock(key: String) {
+        Files.deleteIfExists(Path("/mutex/$key.txt"))
     }
 
     suspend fun readFileAsync(filePath: String): String =
