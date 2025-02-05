@@ -1,9 +1,9 @@
 package com.kapivara.domain.eventstore
 
-import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventstore.Publisher.PublisherId
-import com.eventhub.domain.eventstore.Subscriber.SubscriberId
-import com.eventhub.domain.eventstore.ports.EventIdentityRepository
+import com.kapivara.domain.Identifier
+import com.kapivara.domain.eventstore.Publisher.PublisherId
+import com.kapivara.domain.eventstore.Subscriber.SubscriberId
+import com.kapivara.domain.eventstore.ports.EventIdentityRepository
 
 data class Identity(
     val id: IdentityId,

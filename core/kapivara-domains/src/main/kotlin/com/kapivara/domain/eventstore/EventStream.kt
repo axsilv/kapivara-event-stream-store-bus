@@ -1,19 +1,18 @@
 package com.kapivara.domain.eventstore
 
-import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventbus.EventBusBucket.Companion.deliverToSubscriber
-import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
-import com.eventhub.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.eventhub.domain.eventstore.ports.EventIdentityRepository
-import com.eventhub.domain.eventstore.ports.EventStreamRepository
+import com.kapivara.domain.Identifier
+import com.kapivara.domain.eventbus.EventBusBucket.Companion.deliverToSubscriber
+import com.kapivara.domain.eventbus.ports.EventBusBucketRepository
+import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
+import com.kapivara.domain.eventstore.ports.EventIdentityRepository
+import com.kapivara.domain.eventstore.ports.EventStreamRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.util.UUID
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import java.util.UUID
-import kotlin.collections.flatten
 
 data class EventStream(
     val eventMessages: Set<EventMessage>,

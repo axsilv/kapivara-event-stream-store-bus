@@ -1,9 +1,9 @@
 package com.kapivara.domain.eventstore.ports
 
-import com.eventhub.domain.eventstore.Identity
-import com.eventhub.domain.eventstore.Identity.IdentityId
-import com.eventhub.domain.eventstore.Publisher.PublisherId
-import com.eventhub.domain.eventstore.Subscriber.SubscriberId
+import com.kapivara.domain.eventstore.Identity
+import com.kapivara.domain.eventstore.Identity.IdentityId
+import com.kapivara.domain.eventstore.Publisher.PublisherId
+import com.kapivara.domain.eventstore.Subscriber.SubscriberId
 
 interface EventIdentityRepository {
     suspend fun store(identity: Identity)

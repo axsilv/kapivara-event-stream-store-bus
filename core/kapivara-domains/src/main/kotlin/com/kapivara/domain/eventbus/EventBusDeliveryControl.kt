@@ -1,9 +1,9 @@
 package com.kapivara.domain.eventbus
 
-import com.eventhub.domain.eventbus.EventBusBucket.EventBusBucketId
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import kotlinx.datetime.Instant
+import com.kapivara.domain.eventbus.EventBusBucket.EventBusBucketId
+import com.kapivara.domain.eventstore.EventStream.EventStreamId
 import java.util.UUID
+import kotlinx.datetime.Instant
 
 data class EventBusDeliveryControl(
     val id: UUID = UUID.randomUUID(),

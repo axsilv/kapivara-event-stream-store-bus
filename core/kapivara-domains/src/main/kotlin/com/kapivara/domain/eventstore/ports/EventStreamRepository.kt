@@ -1,8 +1,8 @@
 package com.kapivara.domain.eventstore.ports
 
-import com.eventhub.domain.eventstore.EventMessage
-import com.eventhub.domain.eventstore.EventStream
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
+import com.kapivara.domain.eventstore.EventMessage
+import com.kapivara.domain.eventstore.EventStream
+import com.kapivara.domain.eventstore.EventStream.EventStreamId
 
 interface EventStreamRepository {
     suspend fun store(eventMessage: EventMessage)

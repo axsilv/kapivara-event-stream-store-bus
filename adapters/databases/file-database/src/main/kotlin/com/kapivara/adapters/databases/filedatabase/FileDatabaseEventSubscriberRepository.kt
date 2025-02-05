@@ -1,10 +1,10 @@
 package com.kapivara.adapters.databases.filedatabase
 
-import com.eventhub.domain.eventbus.EventBusBucket.EventBusBucketId
-import com.eventhub.domain.eventstore.Identity.IdentityId
-import com.eventhub.domain.eventstore.Subscriber
-import com.eventhub.domain.eventstore.ports.EventSubscriberRepository
 import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.subscribersPath
+import com.kapivara.domain.eventbus.EventBusBucket.EventBusBucketId
+import com.kapivara.domain.eventstore.Identity.IdentityId
+import com.kapivara.domain.eventstore.Subscriber
+import com.kapivara.domain.eventstore.ports.EventSubscriberRepository
 import kotlinx.serialization.json.Json
 
 class FileDatabaseEventSubscriberRepository(

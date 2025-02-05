@@ -1,6 +1,6 @@
 package com.kapivara.domain.eventstore.ports
 
-import com.eventhub.domain.eventstore.Subscriber
+import com.kapivara.domain.eventstore.Subscriber
 
 fun interface EventSubscriberRepository {
     suspend fun store(subscriber: Subscriber)

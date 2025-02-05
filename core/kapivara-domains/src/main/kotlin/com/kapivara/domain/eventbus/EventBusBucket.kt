@@ -1,10 +1,10 @@
 package com.kapivara.domain.eventbus
 
-import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
-import com.eventhub.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.domain.eventstore.Subscriber.SubscriberId
+import com.kapivara.domain.Identifier
+import com.kapivara.domain.eventbus.ports.EventBusBucketRepository
+import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
+import com.kapivara.domain.eventstore.EventStream.EventStreamId
+import com.kapivara.domain.eventstore.Subscriber.SubscriberId
 
 data class EventBusBucket(
     val id: EventBusBucketId,

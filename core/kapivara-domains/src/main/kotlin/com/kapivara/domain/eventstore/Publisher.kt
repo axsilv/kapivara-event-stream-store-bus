@@ -1,7 +1,7 @@
 package com.kapivara.domain.eventstore
 
-import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventstore.ports.EventPublisherRepository
+import com.kapivara.domain.Identifier
+import com.kapivara.domain.eventstore.ports.EventPublisherRepository
 
 data class Publisher(
     val id: PublisherId,

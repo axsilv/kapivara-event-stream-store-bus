@@ -1,16 +1,16 @@
 package com.kapivara.domain.eventstore
 
-import com.eventhub.domain.Identifier
-import com.eventhub.domain.eventbus.ports.EventBusBucketRepository
-import com.eventhub.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.eventhub.domain.eventstore.EventStream.Companion.deliverStream
-import com.eventhub.domain.eventstore.EventStream.EventStreamId
-import com.eventhub.domain.eventstore.Identity.IdentityId
-import com.eventhub.domain.eventstore.Publisher.PublisherId
-import com.eventhub.domain.eventstore.ports.EventIdentityRepository
-import com.eventhub.domain.eventstore.ports.EventStreamRepository
-import kotlinx.datetime.Instant
+import com.kapivara.domain.Identifier
+import com.kapivara.domain.eventbus.ports.EventBusBucketRepository
+import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
+import com.kapivara.domain.eventstore.EventStream.Companion.deliverStream
+import com.kapivara.domain.eventstore.EventStream.EventStreamId
+import com.kapivara.domain.eventstore.Identity.IdentityId
+import com.kapivara.domain.eventstore.Publisher.PublisherId
+import com.kapivara.domain.eventstore.ports.EventIdentityRepository
+import com.kapivara.domain.eventstore.ports.EventStreamRepository
 import java.util.UUID
+import kotlinx.datetime.Instant
 
 data class EventMessage(
     val id: EventMessageId,
