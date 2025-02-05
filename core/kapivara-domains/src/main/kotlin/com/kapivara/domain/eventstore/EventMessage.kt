@@ -8,9 +8,10 @@ import com.kapivara.domain.eventstore.EventStream.EventStreamId
 import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Publisher.PublisherId
 import com.kapivara.domain.eventstore.ports.EventIdentityRepository
+import com.kapivara.domain.eventstore.ports.EventPublisherRepository
 import com.kapivara.domain.eventstore.ports.EventStreamRepository
-import java.util.UUID
 import kotlinx.datetime.Instant
+import java.util.UUID
 
 data class EventMessage(
     val id: EventMessageId,
@@ -31,6 +32,7 @@ data class EventMessage(
         eventIdentityRepository: EventIdentityRepository,
         eventBusBucketRepository: EventBusBucketRepository,
         eventBusDeliveryControlRepository: EventBusDeliveryControlRepository,
+        eventPublisherRepository: EventPublisherRepository,
     ) {
         eventIdentityRepository.fetchPublisherId(identityId).let {
             if (it != publisherId) {

@@ -7,12 +7,12 @@ import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
 import com.kapivara.domain.eventstore.ports.EventIdentityRepository
 import com.kapivara.domain.eventstore.ports.EventStreamRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
-import java.util.UUID
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 data class EventStream(
     val eventMessages: Set<EventMessage>,

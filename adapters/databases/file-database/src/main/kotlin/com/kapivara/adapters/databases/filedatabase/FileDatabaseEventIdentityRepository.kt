@@ -6,10 +6,10 @@ import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Publisher.PublisherId
 import com.kapivara.domain.eventstore.Subscriber.SubscriberId
 import com.kapivara.domain.eventstore.ports.EventIdentityRepository
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
-import kotlinx.serialization.json.Json
 
 class FileDatabaseEventIdentityRepository(
     private val database: FileDatabase,

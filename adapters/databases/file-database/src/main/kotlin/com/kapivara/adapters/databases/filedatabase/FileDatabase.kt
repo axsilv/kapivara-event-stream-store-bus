@@ -1,6 +1,8 @@
 package com.kapivara.adapters.databases.filedatabase
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -9,8 +11,6 @@ import java.nio.channels.FileChannel
 import java.nio.channels.FileLock
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class FileDatabase {
     companion object {

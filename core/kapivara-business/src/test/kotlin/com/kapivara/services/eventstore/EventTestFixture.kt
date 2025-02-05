@@ -4,10 +4,10 @@ import com.eventhub.domain.eventstore.EventStream.AggregateId
 import com.eventhub.domain.eventstore.Message
 import com.eventhub.domain.eventstore.toEventId
 import com.eventhub.domain.eventstore.toOwnerId
-import java.util.UUID
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
+import java.util.UUID
 
 object EventTestFixture {
     val eventUuid: UUID = UUID.randomUUID()

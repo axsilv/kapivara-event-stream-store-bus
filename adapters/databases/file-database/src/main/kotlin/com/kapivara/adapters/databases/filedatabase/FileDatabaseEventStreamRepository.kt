@@ -8,10 +8,10 @@ import com.kapivara.domain.eventstore.EventStream.EventStreamId
 import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Publisher.PublisherId
 import com.kapivara.domain.eventstore.ports.EventStreamRepository
-import java.io.File
-import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
+import java.io.File
+import java.util.UUID
 
 class FileDatabaseEventStreamRepository(
     private val database: FileDatabase,
