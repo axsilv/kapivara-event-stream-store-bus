@@ -5,7 +5,7 @@ import com.kapivara.domain.eventstore.Publisher
 import com.kapivara.domain.eventstore.ports.EventPublisherRepository
 import kotlinx.serialization.json.Json
 
-class FileDatabaseEventPublisherRepository(
+class FileDatabasePublisherRepository(
     private val database: FileDatabase,
 ) : EventPublisherRepository {
     override suspend fun store(publisher: Publisher) {

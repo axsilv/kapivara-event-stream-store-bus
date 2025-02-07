@@ -11,7 +11,7 @@ import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
 
-class FileDatabaseEventIdentityRepository(
+class FileDatabaseIdentityRepository(
     private val database: FileDatabase,
 ) : EventIdentityRepository {
     override suspend fun store(identity: Identity) {
