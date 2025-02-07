@@ -1,6 +1,6 @@
 package com.kapivara.services.eventstore
 
-import com.kapivara.services.Command
+import com.kapivara.services.CommandBusiness
 import kotlinx.datetime.Instant
 import java.util.UUID
 
@@ -13,4 +13,4 @@ data class StoreEventMessageBusiness(
     val position: Long,
     val isFinal: Boolean,
     val occurredOn: Instant,
-) : Command
+) : CommandBusiness

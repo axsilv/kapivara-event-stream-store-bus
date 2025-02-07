@@ -6,18 +6,14 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.RandomAccessFile
-import java.nio.channels.FileChannel
-import java.nio.channels.FileLock
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.io.path.Path
 
-class FileDatabase {
+class FileDatabase : Database {
     companion object {
         private val log = KotlinLogging.logger { }
     }
@@ -37,7 +33,7 @@ class FileDatabase {
         }
     }
 
-    suspend fun writeFileAsync(
+    override suspend fun writeFileAsync(
         filePath: String,
         content: String,
     ) {
@@ -49,23 +45,23 @@ class FileDatabase {
             Files.write(
                 path,
                 compressedContent,
-                StandardOpenOption.CREATE_NEW // Ensures atomic creation
+                StandardOpenOption.CREATE_NEW, // Ensures atomic creation
             )
         }
     }
 
-    suspend fun lock(key: String) {
+    override suspend fun lock(key: String) {
         writeFileAsync(
             filePath = "/mutex/$key.txt", // todo
-            content = ""
+            content = "",
         )
     }
 
-    suspend fun unlock(key: String) {
+    override suspend fun unlock(key: String) {
         Files.deleteIfExists(Path("/mutex/$key.txt"))
     }
 
-    suspend fun readFileAsync(filePath: String): String =
+    override suspend fun readFileAsync(filePath: String): String =
         withContext(Dispatchers.IO) {
             val file = File(filePath)
 
@@ -74,7 +70,7 @@ class FileDatabase {
             decompressContent(compressedContent)
         }
 
-    suspend fun readAllFilesAsync(filePath: String): Set<String> =
+    override suspend fun readAllFilesAsync(filePath: String): Set<String> =
         withContext(Dispatchers.IO) {
             val folder = File(filePath)
             folder

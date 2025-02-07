@@ -10,7 +10,7 @@ import com.kapivara.domain.eventstore.toEventMessageId
 import com.kapivara.domain.eventstore.toEventStreamId
 import com.kapivara.domain.eventstore.toIdentityId
 import com.kapivara.domain.eventstore.toPublisherId
-import com.kapivara.services.CommandHandler
+import com.kapivara.services.CommandBusinessHandler
 
 class StoreEventMessageBusinessHandler(
     private val eventStreamRepository: EventStreamRepository,
@@ -18,17 +18,17 @@ class StoreEventMessageBusinessHandler(
     private val eventBusBucketRepository: EventBusBucketRepository,
     private val eventBusDeliveryControlRepository: EventBusDeliveryControlRepository,
     private val eventPublisherRepository: EventPublisherRepository,
-) : CommandHandler<StoreEventMessageBusiness> {
-    override suspend fun store(command: StoreEventMessageBusiness) {
+) : CommandBusinessHandler<StoreEventMessageBusiness> {
+    override suspend fun store(commandBusiness: StoreEventMessageBusiness) {
         EventMessage(
-            id = command.id.toEventMessageId(),
-            identityId = command.identityId.toIdentityId(),
-            publisherId = command.publisherId.toPublisherId(),
-            eventStreamId = command.eventStreamId.toEventStreamId(),
-            payload = command.payload,
-            position = command.position,
-            isFinal = command.isFinal,
-            occurredOn = command.occurredOn,
+            id = commandBusiness.id.toEventMessageId(),
+            identityId = commandBusiness.identityId.toIdentityId(),
+            publisherId = commandBusiness.publisherId.toPublisherId(),
+            eventStreamId = commandBusiness.eventStreamId.toEventStreamId(),
+            payload = commandBusiness.payload,
+            position = commandBusiness.position,
+            isFinal = commandBusiness.isFinal,
+            occurredOn = commandBusiness.occurredOn,
         ).store(
             eventStreamRepository = eventStreamRepository,
             eventIdentityRepository = eventIdentityRepository,
