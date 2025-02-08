@@ -16,6 +16,8 @@ import java.util.UUID
 class FileDatabaseEventStreamRepository(
     private val database: FileDatabase,
 ) : EventStreamRepository {
+    private val cache: DatabaseCache = DatabaseCache.create<UUID, List<EventMessage>>()
+
     override suspend fun store(eventMessage: EventMessage) {
         val streamId = eventMessage.eventStreamId.toString()
         val messageId = eventMessage.id.toString()
@@ -28,24 +30,49 @@ class FileDatabaseEventStreamRepository(
             filePath = streamFile.path,
             content = Json.encodeToString(eventMessage.toMap()),
         )
+
+        fetchCache(eventMessage.eventStreamId)
+            ?.plus(eventMessage)
+            ?.let { streamCache ->
+                cache.store(
+                    key = eventMessage.eventStreamId,
+                    value = streamCache,
+                )
+            }
     }
 
-    override suspend fun fetch(eventStreamId: EventStreamId): EventStream? {
+    override suspend fun fetch(
+        eventStreamId: EventStreamId,
+        useCache: Boolean,
+    ): EventStream? {
+        if (useCache) {
+            fetchCache(eventStreamId)
+                ?.let {
+                    return EventStream(eventMessages = it)
+                }
+        }
+
         val folderStreamHash = eventStreamId.toString().hashCode()
         val streamFile = File(streamPath() + "$folderStreamHash/$eventStreamId")
 
         if (streamFile.exists().not()) return null
 
-        val messages =
-            streamFile
-                .listFiles()
-                .toList()
-                .map { file -> file.toMap() }
-                .map { json -> json.toEventMessage() }
-                .toSet()
+        val messages = fetchStreamFromStore(streamFile)
 
         return EventStream(eventMessages = messages)
     }
+
+    private suspend fun FileDatabaseEventStreamRepository.fetchStreamFromStore(streamFile: File): Set<EventMessage> =
+        streamFile
+            .listFiles()
+            .toList()
+            .map { entry -> entry.toMap() }
+            .map { jsonEntry -> jsonEntry.toEventMessage() }
+            .toSet()
+
+    private fun fetchCache(eventStreamId: EventStreamId): Set<EventMessage>? =
+        cache
+            .fetch<UUID, Set<EventMessage>>(eventStreamId.value)
 
     private suspend fun File.toMap(): Map<String, Any> = Json.decodeFromString<Map<String, Any>>(database.readFileAsync(this.path))
 
