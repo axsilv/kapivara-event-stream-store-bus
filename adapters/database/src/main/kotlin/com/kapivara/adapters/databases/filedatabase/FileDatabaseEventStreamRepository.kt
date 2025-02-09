@@ -16,7 +16,7 @@ import java.util.UUID
 class FileDatabaseEventStreamRepository(
     private val database: FileDatabase,
 ) : EventStreamRepository {
-    private val cache: DatabaseCache = DatabaseCache.create<UUID, List<EventMessage>>()
+    private val cache = EventStreamCache
 
     override suspend fun store(eventMessage: EventMessage) {
         val streamId = eventMessage.eventStreamId.toString()
@@ -31,11 +31,12 @@ class FileDatabaseEventStreamRepository(
             content = Json.encodeToString(eventMessage.toMap()),
         )
 
-        fetchCache(eventMessage.eventStreamId)
+        cache
+            .fetchFromCache(eventMessage.eventStreamId)
             ?.plus(eventMessage)
-            ?.let { streamCache ->
+            ?.also { streamCache ->
                 cache.store(
-                    key = eventMessage.eventStreamId,
+                    key = eventMessage.eventStreamId.value,
                     value = streamCache,
                 )
             }
@@ -46,7 +47,8 @@ class FileDatabaseEventStreamRepository(
         useCache: Boolean,
     ): EventStream? {
         if (useCache) {
-            fetchCache(eventStreamId)
+            cache
+                .fetchFromCache(eventStreamId)
                 ?.let {
                     return EventStream(eventMessages = it)
                 }
@@ -69,10 +71,6 @@ class FileDatabaseEventStreamRepository(
             .map { entry -> entry.toMap() }
             .map { jsonEntry -> jsonEntry.toEventMessage() }
             .toSet()
-
-    private fun fetchCache(eventStreamId: EventStreamId): Set<EventMessage>? =
-        cache
-            .fetch<UUID, Set<EventMessage>>(eventStreamId.value)
 
     private suspend fun File.toMap(): Map<String, Any> = Json.decodeFromString<Map<String, Any>>(database.readFileAsync(this.path))
 
