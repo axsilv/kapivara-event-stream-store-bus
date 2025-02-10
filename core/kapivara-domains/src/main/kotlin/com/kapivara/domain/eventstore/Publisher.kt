@@ -7,6 +7,13 @@ data class Publisher(
     val id: PublisherId,
     val publisherName: String,
 ) {
+    companion object {
+        suspend fun fetch(
+            id: PublisherId,
+            publisherRepository: PublisherRepository,
+        ) = publisherRepository.fetch(id)
+    }
+
     data class PublisherId(
         val value: Long,
     ) : Identifier<Long>(value = value)
