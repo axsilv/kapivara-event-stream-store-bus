@@ -4,8 +4,9 @@ import com.kapivara.domain.Identifier
 import com.kapivara.domain.eventbus.EventBusBucket.Companion.deliverToSubscriber
 import com.kapivara.domain.eventbus.ports.EventBusBucketRepository
 import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.kapivara.domain.eventstore.ports.EventIdentityRepository
-import com.kapivara.domain.eventstore.ports.EventStreamRepository
+import com.kapivara.domain.eventstore.Message.MessageId
+import com.kapivara.domain.eventstore.ports.IdentityRepository
+import com.kapivara.domain.eventstore.ports.StreamRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -14,25 +15,25 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-data class EventStream(
-    val eventMessages: Set<EventMessage>,
+data class Stream(
+    val eventMessages: Set<Message>,
 ) {
     companion object {
         private val log = KotlinLogging.logger { }
 
         suspend fun deliverStream(
-            eventStreamRepository: EventStreamRepository,
-            eventIdentityRepository: EventIdentityRepository,
-            eventStreamId: EventStreamId,
+            streamRepository: StreamRepository,
+            identityRepository: IdentityRepository,
+            streamId: StreamId,
             eventBusBucketRepository: EventBusBucketRepository,
             eventBusDeliveryControlRepository: EventBusDeliveryControlRepository,
         ) = coroutineScope {
             try {
-                eventStreamRepository
-                    .fetch(eventStreamId)
+                streamRepository
+                    .fetch(streamId)
                     ?.eventMessages
                     ?.map { it.identityId }
-                    ?.map { async { eventIdentityRepository.fetchSubscribersId(it) } }
+                    ?.map { async { identityRepository.fetchSubscribersId(it) } }
                     ?.awaitAll()
                     ?.flatten()
                     ?.map { subscriberId ->
@@ -40,7 +41,7 @@ data class EventStream(
                             deliverToSubscriber(
                                 eventBusBucketRepository,
                                 subscriberId,
-                                eventStreamId,
+                                streamId,
                                 eventBusDeliveryControlRepository,
                             )
                         }
@@ -53,10 +54,26 @@ data class EventStream(
             }
         }
 
-        fun UUID.toEventStreamId() = EventStreamId(this)
+        suspend fun fetch(
+            streamId: StreamId,
+            messageId: MessageId,
+            streamRepository: StreamRepository,
+        ) = streamRepository.fetch(
+            streamId = streamId,
+            messageId = messageId,
+        )
+
+        suspend fun fetch(
+            streamId: StreamId,
+            streamRepository: StreamRepository,
+        ) = streamRepository.fetch(
+            streamId = streamId,
+        )
+
+        fun UUID.toStreamId() = StreamId(this)
     }
 
-    class EventStreamId(
+    class StreamId(
         val value: UUID,
     ) : Identifier<UUID>(value = value)
 }

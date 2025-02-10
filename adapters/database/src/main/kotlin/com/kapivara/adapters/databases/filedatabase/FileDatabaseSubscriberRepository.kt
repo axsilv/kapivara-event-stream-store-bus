@@ -4,12 +4,12 @@ import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.subscr
 import com.kapivara.domain.eventbus.EventBusBucket.EventBusBucketId
 import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Subscriber
-import com.kapivara.domain.eventstore.ports.EventSubscriberRepository
+import com.kapivara.domain.eventstore.ports.SubscriberRepository
 import kotlinx.serialization.json.Json
 
 class FileDatabaseSubscriberRepository(
     private val database: FileDatabase,
-) : EventSubscriberRepository {
+) : SubscriberRepository {
     override suspend fun store(subscriber: Subscriber) {
         val jsonContent = Json.encodeToString(subscriber.toMap())
 

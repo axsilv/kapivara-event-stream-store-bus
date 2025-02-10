@@ -3,49 +3,49 @@ package com.kapivara.domain.eventstore
 import com.kapivara.domain.Identifier
 import com.kapivara.domain.eventbus.ports.EventBusBucketRepository
 import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.kapivara.domain.eventstore.EventStream.Companion.deliverStream
-import com.kapivara.domain.eventstore.EventStream.EventStreamId
 import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Publisher.PublisherId
-import com.kapivara.domain.eventstore.ports.EventIdentityRepository
-import com.kapivara.domain.eventstore.ports.EventPublisherRepository
-import com.kapivara.domain.eventstore.ports.EventStreamRepository
+import com.kapivara.domain.eventstore.Stream.Companion.deliverStream
+import com.kapivara.domain.eventstore.Stream.StreamId
+import com.kapivara.domain.eventstore.ports.IdentityRepository
+import com.kapivara.domain.eventstore.ports.PublisherRepository
+import com.kapivara.domain.eventstore.ports.StreamRepository
 import kotlinx.datetime.Instant
 import java.util.UUID
 
-data class EventMessage(
-    val id: EventMessageId,
+data class Message(
+    val id: MessageId,
     val identityId: IdentityId,
     val publisherId: PublisherId,
-    val eventStreamId: EventStreamId,
+    val streamId: StreamId,
     val payload: String,
     val position: Long,
     val isFinal: Boolean,
     val occurredOn: Instant,
 ) {
-    data class EventMessageId(
+    data class MessageId(
         val value: UUID,
     ) : Identifier<UUID>(value)
 
     suspend fun store(
-        eventStreamRepository: EventStreamRepository,
-        eventIdentityRepository: EventIdentityRepository,
+        streamRepository: StreamRepository,
+        identityRepository: IdentityRepository,
         eventBusBucketRepository: EventBusBucketRepository,
         eventBusDeliveryControlRepository: EventBusDeliveryControlRepository,
-        eventPublisherRepository: EventPublisherRepository,
+        publisherRepository: PublisherRepository,
     ) {
-        eventIdentityRepository.fetchPublisherId(identityId).let {
+        identityRepository.fetchPublisherId(identityId).let {
             if (it != publisherId) {
                 throw RuntimeException() // todo
             }
         }
 
-        eventStreamRepository.store(this)
+        streamRepository.store(this)
 
         deliverStream(
-            eventStreamRepository,
-            eventIdentityRepository,
-            eventStreamId,
+            streamRepository,
+            identityRepository,
+            streamId,
             eventBusBucketRepository,
             eventBusDeliveryControlRepository,
         )

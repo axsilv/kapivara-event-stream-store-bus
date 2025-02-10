@@ -5,8 +5,10 @@ import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Publisher.PublisherId
 import com.kapivara.domain.eventstore.Subscriber.SubscriberId
 
-interface EventIdentityRepository {
+interface IdentityRepository {
     suspend fun store(identity: Identity)
+
+    suspend fun fetch(identityId: IdentityId): Identity?
 
     suspend fun fetchPublisherId(identityId: IdentityId): PublisherId?
 

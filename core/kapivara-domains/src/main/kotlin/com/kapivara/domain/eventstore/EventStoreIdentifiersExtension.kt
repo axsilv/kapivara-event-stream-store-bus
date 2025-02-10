@@ -2,10 +2,10 @@ package com.kapivara.domain.eventstore
 
 import java.util.UUID
 
-fun UUID.toEventMessageId() = EventMessage.EventMessageId(this)
+fun UUID.toEventMessageId() = Message.MessageId(this)
 
 fun Long.toIdentityId() = Identity.IdentityId(this)
 
 fun Long.toPublisherId() = Publisher.PublisherId(this)
 
-fun UUID.toEventStreamId() = EventStream.EventStreamId(this)
+fun UUID.toEventStreamId() = Stream.StreamId(this)

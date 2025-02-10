@@ -1,5 +1,9 @@
 package com.kapivara.services.eventstore
 
 import com.kapivara.services.QueryBusiness
+import java.util.UUID
 
-data class FetchEventMessageBusiness : QueryBusiness
+data class FetchEventMessageBusiness(
+    val messageId: UUID,
+    val eventStreamId: UUID,
+) : QueryBusiness

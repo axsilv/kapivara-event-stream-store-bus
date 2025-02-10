@@ -5,7 +5,7 @@ import com.kapivara.domain.eventstore.Identity
 import com.kapivara.domain.eventstore.Identity.IdentityId
 import com.kapivara.domain.eventstore.Publisher.PublisherId
 import com.kapivara.domain.eventstore.Subscriber.SubscriberId
-import com.kapivara.domain.eventstore.ports.EventIdentityRepository
+import com.kapivara.domain.eventstore.ports.IdentityRepository
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.nio.file.Files
@@ -13,7 +13,7 @@ import kotlin.io.path.Path
 
 class FileDatabaseIdentityRepository(
     private val database: FileDatabase,
-) : EventIdentityRepository {
+) : IdentityRepository {
     override suspend fun store(identity: Identity) {
         val jsonContent =
             identity

@@ -3,7 +3,7 @@ package com.kapivara.domain.eventstore
 import com.kapivara.domain.Identifier
 import com.kapivara.domain.eventbus.EventBusBucket.EventBusBucketId
 import com.kapivara.domain.eventstore.Identity.IdentityId
-import com.kapivara.domain.eventstore.ports.EventSubscriberRepository
+import com.kapivara.domain.eventstore.ports.SubscriberRepository
 
 data class Subscriber(
     val id: SubscriberId,
@@ -16,5 +16,5 @@ data class Subscriber(
         val value: Long,
     ) : Identifier<Long>(value = value)
 
-    suspend fun store(eventSubscriberRepository: EventSubscriberRepository) = eventSubscriberRepository.store(this)
+    suspend fun store(subscriberRepository: SubscriberRepository) = subscriberRepository.store(this)
 }

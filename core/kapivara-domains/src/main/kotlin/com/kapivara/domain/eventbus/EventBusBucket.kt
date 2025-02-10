@@ -3,13 +3,13 @@ package com.kapivara.domain.eventbus
 import com.kapivara.domain.Identifier
 import com.kapivara.domain.eventbus.ports.EventBusBucketRepository
 import com.kapivara.domain.eventbus.ports.EventBusDeliveryControlRepository
-import com.kapivara.domain.eventstore.EventStream.EventStreamId
+import com.kapivara.domain.eventstore.Stream.StreamId
 import com.kapivara.domain.eventstore.Subscriber.SubscriberId
 
 data class EventBusBucket(
     val id: EventBusBucketId,
     val subscriberId: SubscriberId,
-    val streams: List<EventStreamId>,
+    val streams: List<StreamId>,
 ) {
     data class EventBusBucketId(
         val value: Long,
@@ -19,7 +19,7 @@ data class EventBusBucket(
         suspend fun deliverToSubscriber(
             eventBusBucketRepository: EventBusBucketRepository,
             subscriberId: SubscriberId,
-            eventStreamId: EventStreamId,
+            streamId: StreamId,
             eventBusDeliveryControlRepository: EventBusDeliveryControlRepository,
         ) {
             try {
@@ -30,7 +30,7 @@ data class EventBusBucket(
 
                 eventBusDeliveryControlRepository.store(
                     EventBusDeliveryControl(
-                        eventStreamId = eventStreamId,
+                        streamId = streamId,
                         eventBusBucketId = eventBusBucketId,
                         hideUntil = null,
                     ),

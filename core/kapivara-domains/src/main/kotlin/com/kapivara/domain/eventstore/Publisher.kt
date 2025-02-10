@@ -1,7 +1,7 @@
 package com.kapivara.domain.eventstore
 
 import com.kapivara.domain.Identifier
-import com.kapivara.domain.eventstore.ports.EventPublisherRepository
+import com.kapivara.domain.eventstore.ports.PublisherRepository
 
 data class Publisher(
     val id: PublisherId,
@@ -11,7 +11,7 @@ data class Publisher(
         val value: Long,
     ) : Identifier<Long>(value = value)
 
-    suspend fun store(eventPublisherRepository: EventPublisherRepository) {
-        eventPublisherRepository.store(this)
+    suspend fun store(publisherRepository: PublisherRepository) {
+        publisherRepository.store(this)
     }
 }
