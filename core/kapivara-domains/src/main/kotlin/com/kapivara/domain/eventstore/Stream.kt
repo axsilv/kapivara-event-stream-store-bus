@@ -55,10 +55,5 @@ data class Stream(
             id.value.toString(),
         )
 
-    fun version() =
-        if (this.eventMessages.isNotEmpty()) {
-            this.eventMessages.maxOf { it.position }
-        } else {
-            0
-        }
+    fun version() = eventMessages.maxOfOrNull { it.position } ?: 0
 }
