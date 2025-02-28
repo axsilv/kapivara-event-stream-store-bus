@@ -47,7 +47,7 @@ class FileDatabaseEventStorageRepositoryTest :
 
                         with(FileDatabaseEventStorageRepository(database)) {
                             append(streamV0)
-                            val result = fetch(streamV0.arrangement())!!
+                            val result = fetchLast(streamV0.arrangement())!!
                             result.id.value shouldBe streamV0.id.value
                             result.contextName shouldBe streamV0.contextName
                             result.systemName shouldBe streamV0.systemName

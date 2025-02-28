@@ -6,5 +6,5 @@ import java.util.LinkedHashSet
 interface EventStorageRepository {
     suspend fun append(stream: Stream)
 
-    suspend fun fetch(arrangement: LinkedHashSet<String>): Stream?
+    suspend fun fetchLast(arrangement: LinkedHashSet<String>): Stream?
 }

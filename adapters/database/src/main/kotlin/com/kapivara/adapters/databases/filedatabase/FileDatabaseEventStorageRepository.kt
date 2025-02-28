@@ -39,7 +39,7 @@ class FileDatabaseEventStorageRepository(
                     .fold(intermediatePath) { acc, next -> acc.resolve(next) }
             }
 
-    override suspend fun fetch(arrangement: LinkedHashSet<String>): Stream? =
+    override suspend fun fetchLast(arrangement: LinkedHashSet<String>): Stream? =
         database
             .readFileAsync(
                 filePath = resourcePath(arrangement).toString(),

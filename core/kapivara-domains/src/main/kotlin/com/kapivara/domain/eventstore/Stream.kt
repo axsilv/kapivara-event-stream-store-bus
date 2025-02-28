@@ -24,7 +24,7 @@ data class Stream(
             systemName: String,
             streamType: String,
             eventStorageRepository: EventStorageRepository,
-        ) = eventStorageRepository.fetch(
+        ) = eventStorageRepository.fetchLast(
             arrangement = linkedSetOf(contextName, systemName, streamType, id.value.toString()),
         )
     }
