@@ -9,6 +9,8 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Files.createDirectories
+import java.nio.file.Files.write
 import java.nio.file.Path
 import java.util.UUID
 import java.util.zip.GZIPInputStream
@@ -44,10 +46,11 @@ class FileDatabase : Database {
         mutex.withLock(filePath) {
             withContext(Dispatchers.IO) {
                 val compressedContent = compressContent(content)
-
-                Files.createDirectories(filePath)
                 val fullPath = filePath.resolve("$fileName.txt")
-                Files.write(
+
+                createDirectories(filePath)
+
+                write(
                     fullPath,
                     compressedContent,
                 )
@@ -77,16 +80,7 @@ class FileDatabase : Database {
         withContext(Dispatchers.IO) {
             val compressedContent =
                 if (fileName == null) {
-                    File(filePath)
-                        .listFiles()
-                        .mapNotNull { file ->
-                            file
-                                .nameWithoutExtension
-                                .toIntOrNull()
-                                ?.let { number -> number to file.toPath() }
-                        }.maxBy { it.first }
-                        .second
-                        .readBytes()
+                    readLatestFile(filePath)
                 } else {
                     val file = File(filePath + fileName)
 
@@ -95,6 +89,18 @@ class FileDatabase : Database {
 
             decompressContent(compressedContent)
         }
+
+    private fun readLatestFile(filePath: String): ByteArray =
+        File(filePath)
+            .listFiles()
+            .mapNotNull { file ->
+                file
+                    .nameWithoutExtension
+                    .toIntOrNull()
+                    ?.let { number -> number to file.toPath() }
+            }.maxBy { it.first }
+            .second
+            .readBytes()
 
     override suspend fun readAllFilesAsync(filePath: String): Set<String> =
         withContext(Dispatchers.IO) {

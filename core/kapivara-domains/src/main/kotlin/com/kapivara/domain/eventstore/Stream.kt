@@ -24,9 +24,10 @@ data class Stream(
             systemName: String,
             streamType: String,
             eventStorageRepository: EventStorageRepository,
-        ) = eventStorageRepository.fetchLast(
-            arrangement = linkedSetOf(contextName, systemName, streamType, id.value.toString()),
-        )
+        ): Stream? =
+            eventStorageRepository.fetchLast(
+                arrangement = linkedSetOf(contextName, systemName, streamType, id.value.toString()),
+            )
     }
 
     class StreamId(
