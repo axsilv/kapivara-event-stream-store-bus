@@ -37,3 +37,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+**/adapters/database/src/test/resources/kapivara/**

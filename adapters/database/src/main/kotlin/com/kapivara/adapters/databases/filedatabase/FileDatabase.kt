@@ -1,21 +1,24 @@
 package com.kapivara.adapters.databases.filedatabase
 
-import io.github.oshai.kotlinlogging.KotlinLogging
+import com.kapivara.adapters.databases.filedatabase.Database.Key
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
+import java.util.UUID
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.io.path.Path
+import kotlin.io.path.readBytes
 
 class FileDatabase : Database {
     companion object {
-        private val log = KotlinLogging.logger { }
+        private val mutex: Mutex = Mutex()
     }
 
     private fun compressContent(content: String): ByteArray {
@@ -34,38 +37,61 @@ class FileDatabase : Database {
     }
 
     override suspend fun writeFileAsync(
-        filePath: String,
+        filePath: Path,
+        fileName: String,
         content: String,
     ) {
-        withContext(Dispatchers.IO) {
-            val compressedContent = compressContent(content)
+        mutex.withLock(filePath) {
+            withContext(Dispatchers.IO) {
+                val compressedContent = compressContent(content)
 
-            val path: Path = File(filePath).toPath()
-
-            Files.write(
-                path,
-                compressedContent,
-                StandardOpenOption.CREATE_NEW, // Ensures atomic creation
-            )
+                Files.createDirectories(filePath)
+                val fullPath = filePath.resolve("$fileName.txt")
+                Files.write(
+                    fullPath,
+                    compressedContent,
+                )
+            }
         }
     }
 
-    override suspend fun lock(key: String) {
+    override suspend fun lock(key: String): Key {
+        val key = Key(UUID.randomUUID().toString())
         writeFileAsync(
-            filePath = "/mutex/$key.txt", // todo
-            content = "",
+            filePath = Path.of("", "mutex"), // todo
+            fileName = "$key",
+            content = key.value,
         )
+
+        return key
     }
 
     override suspend fun unlock(key: String) {
         Files.deleteIfExists(Path("/mutex/$key.txt"))
     }
 
-    override suspend fun readFileAsync(filePath: String): String =
+    override suspend fun readFileAsync(
+        filePath: String,
+        fileName: String?,
+    ): String? =
         withContext(Dispatchers.IO) {
-            val file = File(filePath)
+            val compressedContent =
+                if (fileName == null) {
+                    File(filePath)
+                        .listFiles()
+                        .mapNotNull { file ->
+                            file
+                                .nameWithoutExtension
+                                .toIntOrNull()
+                                ?.let { number -> number to file.toPath() }
+                        }.maxBy { it.first }
+                        .second
+                        .readBytes()
+                } else {
+                    val file = File(filePath + fileName)
 
-            val compressedContent = file.readBytes()
+                    file.readBytes()
+                }
 
             decompressContent(compressedContent)
         }

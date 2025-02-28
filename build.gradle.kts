@@ -39,12 +39,15 @@ subprojects {
 
         dependencies {
             implementation(rootProject.libs.kotlinx.coroutines)
+            implementation(rootProject.libs.kotlinx.coroutines.core)
             implementation(rootProject.libs.kotlinx.datetime)
             implementation(rootProject.libs.kotlinx.collections.immutable)
             implementation(rootProject.libs.kotlinx.coroutines.reactor)
             implementation(rootProject.libs.serialization.json)
             implementation(rootProject.libs.serialization.core)
             implementation(rootProject.libs.kotlin.logging)
+            implementation("org.slf4j:slf4j-api:2.1.0-alpha1")
+            implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.20-RC")
 
             testImplementation(rootProject.libs.kotlinx.coroutines.test)
             testImplementation(rootProject.libs.kotest.junit5)

@@ -4,5 +4,5 @@ import kotlin.math.absoluteValue
 
 fun <T> number(t: T): Int {
     val hashCode = t.hashCode()
-    return (hashCode % 101).absoluteValue
+    return (hashCode % 1001).absoluteValue
 }

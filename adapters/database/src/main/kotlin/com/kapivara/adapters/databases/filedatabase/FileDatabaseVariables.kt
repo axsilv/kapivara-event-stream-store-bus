@@ -1,17 +1,12 @@
 package com.kapivara.adapters.databases.filedatabase
 
+import java.nio.file.Path
+
 object FileDatabaseVariables {
-    fun dataPath(): String = System.getenv("FILE_PATH") ?: "${System.getProperty("user.home")}/kapivara/data"
+    fun dataPath(): Path =
+        System.getenv("FILE_PATH")?.let { Path.of(it, "") }
+            ?: System.getProperty("FILE_PATH")?.let { Path.of(it, "") }
+            ?: Path.of("${System.getProperty("user.home")}", "kapivara", "data")
 
-    fun streamPath() = dataPath() + "/eventstore/streams"
-
-    fun bucketsPath() = dataPath() + "/eventbus/buckets"
-
-    fun hidePath() = dataPath() + "/eventbus/buckets/hide"
-
-    fun identitiesPath() = dataPath() + "/eventstore/identities"
-
-    fun publishersPath() = dataPath() + "/eventstore/publishers"
-
-    fun subscribersPath() = dataPath() + "/eventbus/subscribers"
+    fun streamPath() = dataPath().plus(Path.of("eventstore", "streams"))
 }
