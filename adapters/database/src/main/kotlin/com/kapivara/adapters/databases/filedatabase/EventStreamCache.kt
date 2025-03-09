@@ -1,18 +1,18 @@
 package com.kapivara.adapters.databases.filedatabase
 
-import com.kapivara.domain.eventstore.Message
+import com.kapivara.domain.eventstore.Event
 import com.kapivara.domain.eventstore.Stream.StreamId
 import java.util.UUID
 
 object EventStreamCache {
-    private val cache: DatabaseCache = DatabaseCache().create<UUID, Set<Message>>()
+    private val cache: DatabaseCache = DatabaseCache().create<UUID, Set<Event>>()
 
-    fun fetchFromCache(streamId: StreamId): Set<Message>? =
+    fun fetchFromCache(streamId: StreamId): Set<Event>? =
         cache
-            .fetch<UUID, Set<Message>>(streamId.value)
+            .fetch<UUID, Set<Event>>(streamId.value)
 
     fun store(
         key: UUID,
-        value: Set<Message>,
+        value: Set<Event>,
     ) = cache.store(key, value)
 }

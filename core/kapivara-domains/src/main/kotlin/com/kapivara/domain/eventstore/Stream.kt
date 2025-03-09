@@ -12,7 +12,7 @@ data class Stream(
     val contextName: String,
     val systemName: String,
     val streamType: String,
-    val eventMessages: Set<Message>,
+    val events: Set<Event>,
     val createdAt: Long,
 ) {
     companion object {
@@ -56,5 +56,5 @@ data class Stream(
             id.value.toString(),
         )
 
-    fun version() = eventMessages.maxOfOrNull { it.position } ?: 0
+    fun version() = events.maxOfOrNull { it.position } ?: 0
 }

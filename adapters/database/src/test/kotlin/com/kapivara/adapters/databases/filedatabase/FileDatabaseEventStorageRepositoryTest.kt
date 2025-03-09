@@ -1,8 +1,8 @@
 package com.kapivara.adapters.databases.filedatabase
 
-import com.kapivara.domain.eventstore.Message
+import com.kapivara.domain.eventstore.Event
 import com.kapivara.domain.eventstore.Stream
-import com.kapivara.domain.eventstore.toMessageId
+import com.kapivara.domain.eventstore.toEventId
 import com.kapivara.domain.eventstore.toStreamId
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -14,7 +14,7 @@ import kotlin.io.path.Path
 class FileDatabaseEventStorageRepositoryTest :
     BehaviorSpec({
         context("Must test file database contract") {
-            given("One stream with one message") {
+            given("One stream with one event") {
                 `when`("Execute all contract functions") {
                     then("Should work") {
                         System.setProperty(
@@ -29,11 +29,11 @@ class FileDatabaseEventStorageRepositoryTest :
                                 contextName = "contextName",
                                 systemName = "systemName",
                                 streamType = "streamType",
-                                eventMessages =
+                                events =
                                     persistentSetOf(
-                                        Message(
-                                            id = randomUUID().toMessageId(),
-                                            messageName = "messageName",
+                                        Event(
+                                            id = randomUUID().toEventId(),
+                                            eventName = "eventName",
                                             payloadFormat = "json",
                                             payloadType = "payloadType",
                                             payload = "payload",

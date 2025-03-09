@@ -4,9 +4,9 @@ import com.kapivara.domain.Identifier
 import kotlinx.datetime.Instant
 import java.util.UUID
 
-data class Message(
-    val id: MessageId,
-    val messageName: String,
+data class Event(
+    val id: EventId,
+    val eventName: String,
     val payloadFormat: String,
     val payloadType: String,
     val payload: String,
@@ -14,7 +14,7 @@ data class Message(
     val isFinal: Boolean,
     val occurredOn: Instant,
 ) {
-    data class MessageId(
+    data class EventId(
         val value: UUID,
     ) : Identifier<UUID>(value)
 }

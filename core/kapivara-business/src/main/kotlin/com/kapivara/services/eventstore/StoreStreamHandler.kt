@@ -19,7 +19,7 @@ class StoreStreamHandler(
                 contextName = contextName ?: "defaultContextName",
                 systemName = systemName ?: "defaultSystemName",
                 streamType = streamType ?: "defaultStreamType",
-                eventMessages = persistentSetOf(),
+                events = persistentSetOf(),
                 createdAt = now().toEpochMilliseconds(),
             ).create(
                 eventStorageRepository = eventStorageRepository,

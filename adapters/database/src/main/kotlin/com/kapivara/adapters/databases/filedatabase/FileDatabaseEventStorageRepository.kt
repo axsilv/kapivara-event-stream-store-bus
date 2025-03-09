@@ -1,8 +1,8 @@
 package com.kapivara.adapters.databases.filedatabase
 
 import com.kapivara.adapters.databases.filedatabase.FileDatabaseVariables.streamPath
-import com.kapivara.domain.eventstore.Message
-import com.kapivara.domain.eventstore.Message.MessageId
+import com.kapivara.domain.eventstore.Event
+import com.kapivara.domain.eventstore.Event.EventId
 import com.kapivara.domain.eventstore.Stream
 import com.kapivara.domain.eventstore.ports.EventStorageRepository
 import com.kapivara.domain.eventstore.toStreamId
@@ -49,10 +49,10 @@ class FileDatabaseEventStorageRepository(
 
     private fun String.toMap(): Map<String, String> = Json.decodeFromString<Map<String, String>>(this)
 
-    private fun Message.toMap(): Map<String, String> =
+    private fun Event.toMap(): Map<String, String> =
         mapOf(
             "id" to id.value.toString(),
-            "messageName" to messageName,
+            "eventName" to eventName,
             "payloadFormat" to payloadFormat,
             "payloadType" to payloadType,
             "payload" to payload,
@@ -67,9 +67,9 @@ class FileDatabaseEventStorageRepository(
             "contextName" to contextName,
             "systemName" to systemName,
             "streamType" to streamType,
-            "eventMessages" to
+            "events" to
                 Json.encodeToString(
-                    eventMessages
+                    events
                         .map { it.toMap() }
                         .toSet(),
                 ),
@@ -78,14 +78,14 @@ class FileDatabaseEventStorageRepository(
 
     private fun Map<String, String>.toJson() = Json.encodeToString(this)
 
-    private fun Map<String, Any>.toMessage(): Message =
-        Message(
-            id = MessageId(fromString(getValue("id") as String)),
+    private fun Map<String, Any>.toEvent(): Event =
+        Event(
+            id = EventId(fromString(getValue("id") as String)),
             payload = getValue("payload") as String,
             position = (getValue("position") as String).toLong(),
             isFinal = (getValue("isFinal") as String).toBoolean(),
             occurredOn = Instant.parse(getValue("occurredOn") as String),
-            messageName = getValue("messageName") as String,
+            eventName = getValue("eventName") as String,
             payloadFormat = getValue("payloadFormat") as String,
             payloadType = getValue("payloadType") as String,
         )
@@ -99,10 +99,10 @@ class FileDatabaseEventStorageRepository(
             contextName = getValue("contextName"),
             systemName = getValue("systemName"),
             streamType = getValue("streamType"),
-            eventMessages =
+            events =
                 (
-                    Json.decodeFromString<Set<Map<String, String>>>(getValue("eventMessages"))
-                ).map { it.toMessage() }
+                    Json.decodeFromString<Set<Map<String, String>>>(getValue("events"))
+                ).map { it.toEvent() }
                     .toSet(),
             createdAt = getValue("createdAt").toLong(),
         )

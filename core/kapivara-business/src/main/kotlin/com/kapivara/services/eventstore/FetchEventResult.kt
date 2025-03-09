@@ -1,12 +1,12 @@
 package com.kapivara.services.eventstore
 
-import com.kapivara.domain.eventstore.Message
+import com.kapivara.domain.eventstore.Event
 import kotlinx.datetime.Instant
 import java.util.UUID
 
-data class FetchMessageResult(
+data class FetchEventResult(
     val id: UUID,
-    val messageName: String,
+    val eventName: String,
     val payloadFormat: String,
     val payloadType: String,
     val payload: String,
@@ -15,10 +15,10 @@ data class FetchMessageResult(
     val occurredOn: Instant,
 )
 
-fun Message.toResult() =
-    FetchMessageResult(
+fun Event.toResult() =
+    FetchEventResult(
         id = id.value,
-        messageName = messageName,
+        eventName = eventName,
         payloadFormat = payloadFormat,
         payloadType = payloadType,
         payload = payload,

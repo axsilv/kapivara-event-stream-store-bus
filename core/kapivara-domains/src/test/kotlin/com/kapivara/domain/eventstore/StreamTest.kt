@@ -28,7 +28,7 @@ class StreamTest :
                                 contextName = "contextName",
                                 systemName = "systemName",
                                 streamType = "streamType",
-                                eventMessages = linkedSetOf(),
+                                events = linkedSetOf(),
                                 createdAt = now().toEpochMilliseconds(),
                             )
 
@@ -64,7 +64,7 @@ class StreamTest :
                             contextName = "contextName",
                             systemName = "systemName",
                             streamType = "streamType",
-                            eventMessages = linkedSetOf(),
+                            events = linkedSetOf(),
                             createdAt = now().toEpochMilliseconds(),
                         )
 

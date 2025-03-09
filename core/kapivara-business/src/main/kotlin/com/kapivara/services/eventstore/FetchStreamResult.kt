@@ -4,13 +4,13 @@ import com.kapivara.domain.eventstore.Stream
 import com.kapivara.services.QueryBusinessResult
 
 data class FetchEventStreamBusinessResult(
-    val eventMessages: Set<FetchMessageResult>,
+    val events: Set<FetchEventResult>,
 ) : QueryBusinessResult
 
 fun Stream.toResult() =
     FetchEventStreamBusinessResult(
-        eventMessages =
-            eventMessages
+        events =
+            events
                 .map { it.toResult() }
                 .toSet(),
     )
