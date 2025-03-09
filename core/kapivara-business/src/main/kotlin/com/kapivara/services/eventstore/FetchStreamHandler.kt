@@ -5,13 +5,16 @@ import com.kapivara.domain.eventstore.ports.EventStorageRepository
 import com.kapivara.domain.eventstore.toStreamId
 import com.kapivara.services.QueryBusinessHandler
 
-class FetchStreamBusinessHandler(
+class FetchStreamHandler(
     private val eventStorageRepository: EventStorageRepository,
-) : QueryBusinessHandler<FetchStreamBusiness, FetchEventStreamBusinessResult> {
-    override suspend fun fetch(queryBusiness: FetchStreamBusiness): FetchEventStreamBusinessResult? =
+) : QueryBusinessHandler<FetchStream, FetchEventStreamBusinessResult> {
+    override suspend fun fetch(queryBusiness: FetchStream): FetchEventStreamBusinessResult? =
         Stream
             .fetch(
-                streamId = queryBusiness.id.toStreamId(),
+                id = queryBusiness.id.toStreamId(),
+                contextName = queryBusiness.contextName,
+                systemName = queryBusiness.systemName,
+                streamType = queryBusiness.streamType,
                 eventStorageRepository = eventStorageRepository,
             )?.toResult()
 }

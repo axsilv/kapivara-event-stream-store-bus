@@ -1,22 +1,23 @@
 package com.kapivara.adapters.databases.filedatabase
 
 import com.kapivara.adapters.databases.filedatabase.Database.Key
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Files.createDirectories
+import java.nio.file.Files.deleteIfExists
 import java.nio.file.Files.write
 import java.nio.file.Path
-import java.util.UUID
+import java.util.UUID.randomUUID
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.io.path.Path
 import kotlin.io.path.readBytes
+import kotlin.text.Charsets.UTF_8
 
 class FileDatabase : Database {
     companion object {
@@ -31,20 +32,22 @@ class FileDatabase : Database {
         return byteArrayOutputStream.toByteArray()
     }
 
-    private fun decompressContent(compressedContent: ByteArray): String {
-        val byteArrayInputStream = ByteArrayInputStream(compressedContent)
-        GZIPInputStream(byteArrayInputStream).use { gzipInputStream ->
-            return gzipInputStream.readBytes().toString(Charsets.UTF_8)
-        }
-    }
+    private fun decompressContent(compressedContent: ByteArray): String =
+        ByteArrayInputStream(compressedContent)
+            .gzipInputStream()
+            .readBytesToString()
+
+    private fun ByteArrayInputStream.gzipInputStream() = GZIPInputStream(this)
+
+    private fun GZIPInputStream.readBytesToString() = readBytes().toString(UTF_8)
 
     override suspend fun writeFileAsync(
         filePath: Path,
         fileName: String,
         content: String,
-    ) {
+    ): Unit =
         mutex.withLock(filePath) {
-            withContext(Dispatchers.IO) {
+            withContext(IO) {
                 val compressedContent = compressContent(content)
                 val fullPath = filePath.resolve("$fileName.txt")
 
@@ -56,28 +59,27 @@ class FileDatabase : Database {
                 )
             }
         }
-    }
 
-    override suspend fun lock(key: String): Key {
-        val key = Key(UUID.randomUUID().toString())
-        writeFileAsync(
-            filePath = Path.of("", "mutex"), // todo
-            fileName = "$key",
-            content = key.value,
-        )
+    override suspend fun lock(key: String): Key =
+        Key(randomUUID().toString()).let { key ->
+            writeFileAsync(
+                filePath = Path.of("", "mutex"), // todo
+                fileName = "$key",
+                content = key.value,
+            )
 
-        return key
-    }
+            key
+        }
 
     override suspend fun unlock(key: String) {
-        Files.deleteIfExists(Path("/mutex/$key.txt"))
+        deleteIfExists(Path("/mutex/$key.txt"))
     }
 
     override suspend fun readFileAsync(
         filePath: String,
         fileName: String?,
     ): String? =
-        withContext(Dispatchers.IO) {
+        withContext(IO) {
             val compressedContent =
                 if (fileName == null) {
                     readLatestFile(filePath)
@@ -103,7 +105,7 @@ class FileDatabase : Database {
             .readBytes()
 
     override suspend fun readAllFilesAsync(filePath: String): Set<String> =
-        withContext(Dispatchers.IO) {
+        withContext(IO) {
             val folder = File(filePath)
             folder
                 .listFiles()
